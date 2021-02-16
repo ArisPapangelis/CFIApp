@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CFIApp</string>
+    <string name="edit_message">Enter a meal ID</string>
+    <string name="button_send">Confirm</string>
+</resources>
