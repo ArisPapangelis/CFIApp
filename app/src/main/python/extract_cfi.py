@@ -11,6 +11,8 @@ Function that extracts the CFI curve from each meal, as well as the in-meal indi
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
+import io
+from os.path import dirname, join
 
 
 def fit_func(x, a, b):
@@ -29,13 +31,13 @@ def zero_runs(a):
 
 
 
-def extract_cfi(folder, file, initial_sampling_rate, end_of_meal, stable_secs):
+def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to):
 
     #22 is food addition
     #23 is food mass bite
     #9,15,24,26 problematic
-    
-    filepath = folder + "/" + file + ".txt"
+
+    filepath = join(dirname(__file__), file + ".txt")
     time, cfi = np.loadtxt(filepath, delimiter = ':', skiprows=1, unpack = True)
     
     
@@ -43,8 +45,8 @@ def extract_cfi(folder, file, initial_sampling_rate, end_of_meal, stable_secs):
     #Downsampling 10Hz to 5Hz
     downsampled_rate = 5
     downsampling_factor = int(initial_sampling_rate / downsampled_rate)
-    time = time[::downsampling_factor]
-    cfi = cfi[::downsampling_factor]
+    time = time[:to:downsampling_factor]
+    cfi = cfi[:to:downsampling_factor]
     
     cfi_raw = cfi.copy()
     
@@ -52,7 +54,7 @@ def extract_cfi(folder, file, initial_sampling_rate, end_of_meal, stable_secs):
     plt.figure(file, figsize=(19.2, 10.8))
     plt.xlabel('Time')
     plt.ylabel('Weight')
-    plt.plot(time,cfi, label = "Initial data")
+    #plt.plot(time,cfi, label = "Initial data")
     
     
     
@@ -201,10 +203,14 @@ def extract_cfi(folder, file, initial_sampling_rate, end_of_meal, stable_secs):
     
     #Plot extracted cfi curve
     plt.plot(time,cfi, label = "Extracted CFI")
-    plt.scatter((bite_indices + int(index_offset)) / downsampled_rate, cfi_raw[bite_indices + int(index_offset)], label = 'Detected bites', c = 'tab:orange')
+    #plt.scatter((bite_indices + int(index_offset)) / downsampled_rate, cfi_raw[bite_indices + int(index_offset)], label = 'Detected bites', c = 'tab:orange')
     plt.legend()
-    plt.savefig(folder + "/pics/" + file +".png")
+    f = io.BytesIO()
+    plt.savefig(f, format="png")
     #plt.show()
     plt.close(file)
     if end_of_meal==True:
-        return a, b, total_food_intake, average_food_intake_rate, average_bite_size, bite_size_STD, bite_frequency
+        results = np.array([a, b, total_food_intake, average_food_intake_rate, average_bite_size, bite_size_STD, bite_frequency])
+        return results
+    else:
+        return f.getvalue()
