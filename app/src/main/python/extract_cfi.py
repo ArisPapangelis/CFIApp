@@ -31,7 +31,7 @@ def zero_runs(a):
 
 
 
-def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to):
+def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_ID):
 
     #22 is food addition
     #23 is food mass bite
@@ -45,15 +45,23 @@ def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to):
     #Downsampling 10Hz to 5Hz
     downsampled_rate = 5
     downsampling_factor = int(initial_sampling_rate / downsampled_rate)
-    time = time[:to:downsampling_factor]
-    cfi = cfi[:to:downsampling_factor]
+    time = time[::downsampling_factor]
+    cfi = cfi[::downsampling_factor]
+    time = time[:to]
+    cfi = cfi[:to]
     
     cfi_raw = cfi.copy()
     
     plt.ioff()
-    plt.figure(file, figsize=(19.2, 10.8))
-    plt.xlabel('Time')
-    plt.ylabel('Weight')
+    plt.figure(file, figsize=(27, 10.8))
+
+    plt.xlabel('Time (seconds)', fontsize = 25)
+    plt.ylabel('Weight (grams)', fontsize = 25)
+    plt.xlim(0,1000)
+    plt.ylim(0,600)
+    plt.title(meal_ID, fontsize = 30)
+    plt.xticks(fontsize = 22)
+    plt.yticks(fontsize = 22)
     #plt.plot(time,cfi, label = "Initial data")
     
     
@@ -92,7 +100,7 @@ def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to):
     padding = int((len(cfi)-len(delta)) / 2)
     delta = np.pad(delta, (padding,padding), mode = 'edge')
     
-    plt.plot(time,delta, label = "Delta")
+    #plt.plot(time,delta, label = "Delta")
     
 
     #Compare stable periods to eliminate artifacts or identify food additions
