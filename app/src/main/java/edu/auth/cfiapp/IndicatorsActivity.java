@@ -1,11 +1,11 @@
-package com.example.cfiapp;
-
-import androidx.appcompat.app.AppCompatActivity;
+package edu.auth.cfiapp;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;

@@ -1,15 +1,15 @@
-package com.example.cfiapp;
-
-import androidx.appcompat.app.AppCompatActivity;
+package edu.auth.cfiapp;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class MainActivity extends AppCompatActivity {
 
-    public static final String EXTRA_MESSAGE = "com.example.cfiapp.CONFIRM";
+    public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.CONFIRM";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

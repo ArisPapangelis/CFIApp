@@ -53,7 +53,7 @@ def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_
     cfi_raw = cfi.copy()
     
     plt.ioff()
-    plt.figure(file, figsize=(27, 10.8))
+    plt.figure(file, figsize=(26, 10.8))
 
     plt.xlabel('Time (seconds)', fontsize = 25)
     plt.ylabel('Weight (grams)', fontsize = 25)
@@ -191,7 +191,7 @@ def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_
     coefficients = curve_fit(fit_func,time,cfi)[0]
     #coefficients[-1] = 0
     curve = coefficients[0] * time ** 2 + coefficients[1] * time
-    plt.plot(time,curve, label = "Quadratic curve")
+
    
     
     #a, b, total food intake, average food intake rate, average bite size and standard deviation, bites per minute
@@ -210,9 +210,10 @@ def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_
 
     
     #Plot extracted cfi curve
-    plt.plot(time,cfi, label = "Extracted CFI")
+    plt.plot(time,curve, label = "Quadratic curve", linewidth = 5, linestyle = '-')
+    plt.plot(time,cfi, label = "Extracted CFI", linewidth = 4, alpha=0.6)
     #plt.scatter((bite_indices + int(index_offset)) / downsampled_rate, cfi_raw[bite_indices + int(index_offset)], label = 'Detected bites', c = 'tab:orange')
-    plt.legend()
+    plt.legend(loc=2, fontsize=20)
     f = io.BytesIO()
     plt.savefig(f, format="png")
     #plt.show()

@@ -1,15 +1,15 @@
-package com.example.cfiapp;
-
-import androidx.appcompat.app.AppCompatActivity;
+package edu.auth.cfiapp;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;
@@ -20,12 +20,21 @@ import com.chaquo.python.android.AndroidPlatform;
 
 public class PlottingActivity extends AppCompatActivity {
 
-    public static final String EXTRA_MESSAGE = "com.example.cfiapp.CONFIRM";
+    public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.ENDMEAL";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plotting);
 
+
+         //runPythonThread(message);
+
+
+    }
+    @Override
+    protected void onStart(){
+        super.onStart();
+        setContentView(R.layout.activity_plotting);
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
@@ -37,25 +46,29 @@ public class PlottingActivity extends AppCompatActivity {
             Python.start(new AndroidPlatform(this));
         }
         for (int i=150; i<3396; i=i+150){
-            new ExtractCFI(i, message).execute();
+            new ExtractCFI(i,message).execute();
         }
-
-        // runPythonThread(message);
-
-
     }
 
-    private final class ExtractCFI extends AsyncTask<String, Void, Bitmap> {
+    public void endMeal(View view){
+        String message = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
+        Intent indicatorIntent = new Intent(PlottingActivity.this, IndicatorsActivity.class);
+        indicatorIntent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(indicatorIntent);
+        this.finish();
+    }
+
+    private final class ExtractCFI extends AsyncTask<Void, Void, Bitmap> {
         int i;
         String message;
         ExtractCFI(int i, String message) {
             // list all the parameters like in normal class define
             this.i = i;
-            this.message = message;
+            this.message=message;
         }
 
         @Override
-        protected Bitmap doInBackground(String... message) {
+        protected Bitmap doInBackground(Void... voids) {
             Python py = Python.getInstance();
             PyObject module = py.getModule("extract_cfi");
             try {
@@ -76,33 +89,11 @@ public class PlottingActivity extends AppCompatActivity {
             mealView.setImageBitmap(bitmap);
             if (i >3250){
                 Toast.makeText(PlottingActivity.this, "Meal finished", Toast.LENGTH_LONG).show();
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Intent indicatorIntent = new Intent(PlottingActivity.this, IndicatorsActivity.class);
-                indicatorIntent.putExtra(EXTRA_MESSAGE, message);
-                startActivity(indicatorIntent);
             }
 
         }
 
     }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-
-        Intent indicatorIntent = new Intent(this, IndicatorsActivity.class);
-        indicatorIntent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(indicatorIntent);
-    }
-
 
 
     private void runPythonThread(String message) {
@@ -150,4 +141,20 @@ public class PlottingActivity extends AppCompatActivity {
         T.start();
 
     }
+/*
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+        Intent indicatorIntent = new Intent(this, IndicatorsActivity.class);
+        indicatorIntent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(indicatorIntent);
+    }
+
+ */
+
 }

@@ -1,4 +1,4 @@
-package com.example.cfiapp;
+package edu.auth.cfiapp;
 
 import org.junit.Test;
 
