@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/inner_frame_layout_padding"
+    android:paddingTop="@dimen/inner_frame_layout_padding"
+    android:paddingRight="@dimen/inner_frame_layout_padding"
+    android:paddingBottom="@dimen/inner_frame_layout_padding"
+    tools:context="com.atomax.android.skaleexample.SkaleActivity">
+
+    <TextView
+        android:id="@+id/text_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="Hello World!" />
+
+    <TextView
+        android:id="@+id/text_weight"
+        style="@style/TextAppearance.AppCompat.Display1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center" />
+
+    <TextView
+        android:id="@+id/text_battery"
+        style="@style/TextAppearance.AppCompat.Headline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:gravity="center" />
+
+</LinearLayout>

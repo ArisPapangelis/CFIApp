@@ -26,25 +26,24 @@ public class PlottingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plotting);
 
-
          //runPythonThread(message);
-
-
     }
+
     @Override
     protected void onStart(){
         super.onStart();
         setContentView(R.layout.activity_plotting);
+
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
-        // Capture the layout's TextView and set the string as its text
-        //TextView textView = findViewById(R.id.textView7);
-        //textView.setText(message);
+        /*
         if (!Python.isStarted()) {
             Python.start(new AndroidPlatform(this));
         }
+         */
+
         for (int i=150; i<3396; i=i+150){
             new ExtractCFI(i,message).execute();
         }

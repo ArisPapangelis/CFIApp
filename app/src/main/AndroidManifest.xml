@@ -2,25 +2,45 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="edu.auth.cfiapp">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true"/>
+
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/cfiapp_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/cfiapp_icon_round"
+
         android:supportsRtl="true"
-        android:theme="@style/Theme.CFIApp">
+        android:theme="@style/Theme.CFIApp"
+        android:name="com.chaquo.python.android.PyApplication">
+
+
+
+
+
         <activity
-            android:name="edu.auth.cfiapp.IndicatorsActivity"
-            android:parentActivityName="edu.auth.cfiapp.PlottingActivity"
+            android:name=".SkaleActivity"
+            android:label="@string/title_activity_skale"></activity>
+        <activity
+            android:name=".IndicatorsActivity"
+            android:parentActivityName=".PlottingActivity"
             android:screenOrientation="portrait">
+
             <!-- The meta-data tag is required if you support API level 15 and lower -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.auth.cfiapp.PlottingActivity" />
         </activity>
         <activity
-            android:name="edu.auth.cfiapp.PlottingActivity"
-            android:parentActivityName="edu.auth.cfiapp.MainActivity"
+            android:name=".PlottingActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="landscape">
 
             <!-- The meta-data tag is required if you support API level 15 and lower -->
@@ -28,7 +48,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.auth.cfiapp.MainActivity" />
         </activity>
-        <activity android:name="edu.auth.cfiapp.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
