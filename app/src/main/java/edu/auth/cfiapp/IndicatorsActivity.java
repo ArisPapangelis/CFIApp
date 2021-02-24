@@ -22,7 +22,7 @@ public class IndicatorsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String mealID = intent.getStringExtra(PlottingActivity.EXTRA_MESSAGE);
 
-        runPythonThread(mealID);
+        //runPythonThread(mealID);
 
     }
 

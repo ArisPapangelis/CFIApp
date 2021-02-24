@@ -72,7 +72,7 @@ public class SkaleActivity extends AppCompatActivity implements SkaleHelper.List
         if(id == 1){
             mSkaleHelper.tare();
         }else{
-            // TODO invoke some function here for squre button
+            // TODO invoke some function here for square button
         }
     }
 

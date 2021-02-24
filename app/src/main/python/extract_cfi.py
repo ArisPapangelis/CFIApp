@@ -31,29 +31,32 @@ def zero_runs(a):
 
 
 
-def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_ID):
 
+def extract_cfi(t, w, end_of_meal, stable_secs, to, meal_ID):
+    #def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_ID):
     #22 is food addition
     #23 is food mass bite
     #9,15,24,26 problematic
 
-    filepath = join(dirname(__file__), file + ".txt")
-    time, cfi = np.loadtxt(filepath, delimiter = ':', skiprows=1, unpack = True)
-    
+    #filepath = join(dirname(__file__), file + ".txt")
+    #time, cfi = np.loadtxt(filepath, delimiter = ':', skiprows=1, unpack = True)
+    time = np.array(t)
+    time = time - time[0]
+    cfi = np.array(w)
     
     
     #Downsampling 10Hz to 5Hz
     downsampled_rate = 5
-    downsampling_factor = int(initial_sampling_rate / downsampled_rate)
-    time = time[::downsampling_factor]
-    cfi = cfi[::downsampling_factor]
-    time = time[:to]
-    cfi = cfi[:to]
+    #downsampling_factor = int(initial_sampling_rate / downsampled_rate)
+    #time = time[::downsampling_factor]
+    #cfi = cfi[::downsampling_factor]
+    #time = time[:to]
+    #cfi = cfi[:to]
     
     cfi_raw = cfi.copy()
     
     plt.ioff()
-    plt.figure(file, figsize=(26, 10.8))
+    plt.figure(meal_ID, figsize=(26, 10.8))
 
     plt.xlabel('Time (seconds)', fontsize = 25)
     plt.ylabel('Weight (grams)', fontsize = 25)
@@ -159,7 +162,7 @@ def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_
     cfi = cfi[ranges[0,0]:ranges[len(ranges)-1,1]]
     time = time[ranges[0,0]:ranges[len(ranges)-1,1]]
     if end_of_meal == True:
-        print(file)
+        #print(meal_ID)
         indices = np.where(np.diff(cfi)!=0)[0]
         if len(indices) != 0:
             startIndex = indices[0]
@@ -214,10 +217,11 @@ def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_
     plt.plot(time,cfi, label = "Extracted CFI", linewidth = 4, alpha=0.6)
     #plt.scatter((bite_indices + int(index_offset)) / downsampled_rate, cfi_raw[bite_indices + int(index_offset)], label = 'Detected bites', c = 'tab:orange')
     plt.legend(loc=2, fontsize=20)
+
     f = io.BytesIO()
     plt.savefig(f, format="png")
     #plt.show()
-    plt.close(file)
+    plt.close(meal_ID)
     if end_of_meal==True:
         results = np.array([a, b, total_food_intake, average_food_intake_rate, average_bite_size, bite_size_STD, bite_frequency])
         return results
