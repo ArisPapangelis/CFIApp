@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +33,8 @@ import java.util.TimerTask;
 public class PlottingActivity extends AppCompatActivity implements SkaleHelper.Listener {
 
     public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.ENDMEAL";
+    public static final String EXTRA_TIME = "edu.auth.cfiapp.TIME";
+    public static final String EXTRA_WEIGHT = "edu.auth.cfiapp.WEIGHT";
 
     // Get the Intent that started this activity and extract the string
     private Intent intent;
@@ -88,7 +92,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
             }
         };
 
-        extractCFITimer.schedule(task, 20 * 1000,5 * 1000);
+        extractCFITimer.schedule(task, 10 * 1000,5 * 1000);
 
         //for (int i=150; i<3396; i=i+150){
           //  new ExtractCFI(i,message).execute();
@@ -128,11 +132,33 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
 
     public void endMeal(View view){
         Toast.makeText(PlottingActivity.this, "Meal finished", Toast.LENGTH_LONG).show();
-        //String message = getIntent().getStringExtra(MainActivity.EXTRA_MESSAGE);
+
         Intent indicatorIntent = new Intent(PlottingActivity.this, IndicatorsActivity.class);
         indicatorIntent.putExtra(EXTRA_MESSAGE, message);
+        double[] t;
+        double[] w;
+        synchronized(time) {
+            t = toPrimitive(time.toArray(new Double[time.size()]));
+            w = toPrimitive(weight.toArray(new Double[weight.size()]));
+            indicatorIntent.putExtra(EXTRA_TIME, t);
+            indicatorIntent.putExtra(EXTRA_WEIGHT, w);
+        }
+        //writeMealToFile(t,w,message);
         startActivity(indicatorIntent);
         this.finish();
+    }
+
+    private void writeMealToFile(double[] t, double[] w, String mealID) {
+
+
+    }
+
+    private double[] toPrimitive(Double[] array){
+        double[] primitiveArray = new double[array.length];
+        for (int i=0; i<array.length; i++){
+            primitiveArray[i] = array[i].doubleValue();
+        }
+        return primitiveArray;
     }
 
     @Override
@@ -226,7 +252,6 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
             //if (i >3250){
                 //Toast.makeText(PlottingActivity.this, "Meal finished", Toast.LENGTH_LONG).show();
             //}
-
         }
 
     }
@@ -251,6 +276,4 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
-
 }

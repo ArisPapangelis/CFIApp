@@ -2,6 +2,7 @@ package edu.auth.cfiapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -10,9 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
-import com.chaquo.python.android.AndroidPlatform;
+
+import java.util.Arrays;
 
 public class IndicatorsActivity extends AppCompatActivity {
+
+    //private String mealID;
+    //private double[] time;
+    //private double[] weight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,12 +27,19 @@ public class IndicatorsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         String mealID = intent.getStringExtra(PlottingActivity.EXTRA_MESSAGE);
+        double[] time= intent.getDoubleArrayExtra(PlottingActivity.EXTRA_TIME);
+        double[] weight= intent.getDoubleArrayExtra(PlottingActivity.EXTRA_WEIGHT);
 
-        //runPythonThread(mealID);
+
+        Log.i("IndicatorsActivity", Arrays.toString(time));
+        Log.i("IndicatorsActivity", Arrays.toString(weight));
+
+
+        extractMealIndicators(mealID, time, weight);
 
     }
 
-    private void runPythonThread(String mealID) {
+    private void extractMealIndicators(String mealID, double[] time, double[] weight) {
         TextView a = (TextView) findViewById(R.id.a);
         TextView b = (TextView) findViewById(R.id.b);
         TextView totalFoodIntake = (TextView) findViewById(R.id.totalFoodIntake);
@@ -34,15 +47,12 @@ public class IndicatorsActivity extends AppCompatActivity {
         TextView biteSizeStD = (TextView) findViewById(R.id.biteSizeStD);
         TextView biteFrequency = (TextView) findViewById(R.id.biteFrequency);
 
-        if (!Python.isStarted()) {
-            Python.start(new AndroidPlatform(this));
-        }
         Python py = Python.getInstance();
         PyObject module = py.getModule("extract_cfi");
         new Thread(new Runnable() {
             public void run()  {
                 try {
-                    double[] results = module.callAttr("extract_cfi", "1", 10, true, 1, -1, mealID).toJava(double[].class);
+                    double[] results = module.callAttr("extract_cfi", time, weight, true, 1, -1, mealID).toJava(double[].class);
                     try {
                         runOnUiThread(new Runnable() {
                             @Override
