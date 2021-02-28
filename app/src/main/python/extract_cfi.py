@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.optimize import curve_fit
 import io
-from os.path import dirname, join
+#from os.path import dirname, join
 
 
 def fit_func(x, a, b):
@@ -32,16 +32,14 @@ def zero_runs(a):
 
 
 
-def extract_cfi(t, w, end_of_meal, stable_secs, to, meal_ID):
+def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight):
     #def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_ID):
-    #22 is food addition
-    #23 is food mass bite
-    #9,15,24,26 problematic
+
 
     #filepath = join(dirname(__file__), file + ".txt")
     #time, cfi = np.loadtxt(filepath, delimiter = ':', skiprows=1, unpack = True)
     time = np.array(t)
-    time = time - time[0]
+    #time = time - time[0]
     cfi = np.array(w)
     
     
@@ -53,7 +51,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, to, meal_ID):
     #time = time[:to]
     #cfi = cfi[:to]
     
-    cfi_raw = cfi.copy()
+    #cfi_raw = cfi.copy()
     
     plt.ioff()
     plt.figure(meal_ID, figsize=(26, 10.8))
@@ -61,11 +59,11 @@ def extract_cfi(t, w, end_of_meal, stable_secs, to, meal_ID):
     plt.xlabel('Time (seconds)', fontsize = 25)
     plt.ylabel('Weight (grams)', fontsize = 25)
     plt.xlim(0,1000)
-    plt.ylim(0,600)
+    plt.ylim(0,700)
     plt.title(meal_ID, fontsize = 30)
     plt.xticks(fontsize = 22)
     plt.yticks(fontsize = 22)
-    #plt.plot(time,cfi, label = "Initial data")
+    plt.plot(time,cfi, label = "Initial data")
     
     
     
@@ -175,7 +173,18 @@ def extract_cfi(t, w, end_of_meal, stable_secs, to, meal_ID):
     #"""
     index_offset = time[0] * downsampled_rate
     time = time - time[0]
-    
+
+    #Plot reference curve if training mode was selected
+    if plate_weight > 5:
+        end_weight = cfi[0] - plate_weight
+        reference_coeff = [-0.0006, 1.5, -end_weight]
+        candidate_times = np.roots(reference_coeff)
+        actual_root = np.real(np.min(candidate_times))
+        reference_time = np.arange(0, actual_root, 1/downsampled_rate)
+        reference_curve = reference_coeff[0] * reference_time ** 2 + reference_coeff[1] * reference_time
+        plt.plot(reference_time, reference_curve, label= "Reference curve")
+
+
     #Remove plate weight and invert CFI curve
     cfi = cfi-cfi[-1]
     cfi = abs(cfi-cfi[0])

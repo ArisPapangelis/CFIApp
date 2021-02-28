@@ -1,11 +1,13 @@
 package edu.auth.cfiapp;
 
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.Log;
@@ -22,7 +24,12 @@ import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -32,9 +39,10 @@ import java.util.TimerTask;
 
 public class PlottingActivity extends AppCompatActivity implements SkaleHelper.Listener {
 
-    public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.ENDMEAL";
+    public static final String EXTRA_MEALID = "edu.auth.cfiapp.MEALID";
     public static final String EXTRA_TIME = "edu.auth.cfiapp.TIME";
     public static final String EXTRA_WEIGHT = "edu.auth.cfiapp.WEIGHT";
+
 
     // Get the Intent that started this activity and extract the string
     private Intent intent;
@@ -48,6 +56,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     private TextView weightTextView;
     private TextView batteryTextView;
     private ImageView mealView;
+    private double plateWeight;
 
     private List <Double> time = Collections.synchronizedList(new ArrayList<Double>(1000));
     private List <Double> weight = Collections.synchronizedList(new ArrayList<Double>(1000));
@@ -59,7 +68,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     Runnable extractCFIRunnable = new Runnable() {
         @Override
         public void run() {
-            new ExtractCFI(3000,message).execute();
+            new ExtractCFI(message).execute();
         }
     };
 
@@ -71,6 +80,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
         // Get the Intent that started this activity and extract the string
         intent = getIntent();
         message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        plateWeight = intent.getDoubleExtra(MainActivity.EXTRA_PLATE, 0);
 
         mSkaleHelper = new SkaleHelper(this);
         mSkaleHelper.setListener(this);
@@ -94,9 +104,6 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
 
         extractCFITimer.schedule(task, 10 * 1000,5 * 1000);
 
-        //for (int i=150; i<3396; i=i+150){
-          //  new ExtractCFI(i,message).execute();
-        //}
     }
 
     @Override
@@ -121,12 +128,12 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     protected void onPause() {
         super.onPause();
         mSkaleHelper.pause();
+        handler.removeCallbacks(extractCFIRunnable);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacks(extractCFIRunnable);
     }
 
 
@@ -134,7 +141,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
         Toast.makeText(PlottingActivity.this, "Meal finished", Toast.LENGTH_LONG).show();
 
         Intent indicatorIntent = new Intent(PlottingActivity.this, IndicatorsActivity.class);
-        indicatorIntent.putExtra(EXTRA_MESSAGE, message);
+        indicatorIntent.putExtra(EXTRA_MEALID, message);
         double[] t;
         double[] w;
         synchronized(time) {
@@ -143,13 +150,36 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
             indicatorIntent.putExtra(EXTRA_TIME, t);
             indicatorIntent.putExtra(EXTRA_WEIGHT, w);
         }
-        //writeMealToFile(t,w,message);
+        writeMealToFile(t,w,message);
         startActivity(indicatorIntent);
         this.finish();
     }
 
     private void writeMealToFile(double[] t, double[] w, String mealID) {
+        File path = new File(getApplicationContext().getExternalFilesDir(null), "Meals");
+        //File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "CFIApp_Meals");
 
+        if (!path.isDirectory()){
+            path.mkdirs();
+        }
+        File file = new File(path, mealID + ".txt");
+        FileOutputStream out;
+
+        try {
+            file.createNewFile();
+            out = new FileOutputStream(file,false);
+            out.write(String.format("#Samples: %d%n", t.length).getBytes());
+            out.write(String.format("#Time: %.3f secs%n", (float) t[t.length-1]).getBytes());
+            out.write(String.format("#Plate weight: %.1f grams%n", plateWeight).getBytes());
+            for (int i=0; i < t.length; i++){
+                out.write(String.format("%.3f:%.1f%n", (float)t[i], (float)w[i]).getBytes());
+            }
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -164,17 +194,15 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     @Override
     public void onButtonClicked(int id) {
         Toast.makeText(this, "button " + id + " is clicked", Toast.LENGTH_SHORT).show();
+        /*
         if(id == 1){
             mSkaleHelper.tare();
-        }else{
-            // TODO invoke some function here for square button
         }
-
+         */
     }
 
     @Override
     public void onWeightUpdate(float w) {
-        weightTextView.setText(String.format("%1.1f g", w));
         if (System.currentTimeMillis() - previousTime > 150) {
             synchronized (time) {
                 time.add((double) (System.currentTimeMillis() - startTime) / 1000);
@@ -184,6 +212,18 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
             Log.i("PlottingActivity", String.valueOf(time));
             previousTime = System.currentTimeMillis();
         }
+        else if (previousTime==startTime){
+            //First timestamp
+            synchronized (time) {
+                time.add((double) 0);
+                weight.add((double) w);
+            }
+            Log.i("PlottingActivity", String.valueOf(weight));
+            Log.i("PlottingActivity", String.valueOf(time));
+            previousTime = System.currentTimeMillis();
+        }
+
+        weightTextView.setText(String.format("%1.1f g", w));
     }
 
     @Override
@@ -216,10 +256,8 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     }
 
     private final class ExtractCFI extends AsyncTask<Void, Void, Bitmap> {
-        int i;
         String message;
-        ExtractCFI(int i, String message) {
-            this.i = i;
+        ExtractCFI(String message) {
             this.message=message;
         }
 
@@ -234,7 +272,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
                     t = time.toArray(new Double[time.size()]);
                     w= weight.toArray(new Double[weight.size()]);
                 }
-                byte[] bytes = module.callAttr("extract_cfi", t, w, false, 1, i, message).toJava(byte[].class);
+                byte[] bytes = module.callAttr("extract_cfi", t, w, false, 1, message, plateWeight).toJava(byte[].class);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 //System.out.println(i);
                 return bitmap;
