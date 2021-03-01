@@ -177,7 +177,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight):
     #Plot reference curve if training mode was selected
     if plate_weight > 5:
         end_weight = cfi[0] - plate_weight
-        reference_coeff = [-0.0006, 1.5, -end_weight]
+        reference_coeff = [-0.001, 1, -end_weight]
         candidate_times = np.roots(reference_coeff)
         actual_root = np.real(np.min(candidate_times))
         reference_time = np.arange(0, actual_root, 1/downsampled_rate)

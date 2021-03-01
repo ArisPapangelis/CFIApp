@@ -50,6 +50,7 @@ public class IndicatorsActivity extends AppCompatActivity {
         TextView b = (TextView) findViewById(R.id.b);
         TextView totalFoodIntake = (TextView) findViewById(R.id.totalFoodIntake);
         TextView averageFoodIntakeRate = (TextView) findViewById(R.id.averageFoodIntakeRate);
+        TextView averageBiteSize = (TextView) findViewById(R.id.averageBiteSize);
         TextView biteSizeStD = (TextView) findViewById(R.id.biteSizeStD);
         TextView biteFrequency = (TextView) findViewById(R.id.biteFrequency);
         TextView eatingStyle = (TextView) findViewById(R.id.eatingStyle);
@@ -66,7 +67,7 @@ public class IndicatorsActivity extends AppCompatActivity {
                         public void run() {
                             a.setText("a = " + String.format("%.5f",results[0]) + " g/s^2");
                             a.setTextColor(Color.BLUE);
-                            if (results[0] > 0) {
+                            if (results[0] > -0.0005) {
                                 eatingStyle.setText("Linear");
                                 eatingStyle.setTextColor(Color.RED);
                                 tip.setText("You have a higher risk of developing disordered eating. Consider training " +
@@ -84,9 +85,11 @@ public class IndicatorsActivity extends AppCompatActivity {
                             totalFoodIntake.setTextColor(Color.BLUE);
                             averageFoodIntakeRate.setText("Average food intake rate = " + String.format("%.5f",results[3]) + " g/s");
                             averageFoodIntakeRate.setTextColor(Color.BLUE);
-                            biteSizeStD.setText("Bite size StD = " + String.format("%.1f",results[4]) + " grams");
+                            averageBiteSize.setText("Average bite size = " + String.format("%.5f",results[4]) + " grams");
+                            averageBiteSize.setTextColor(Color.BLUE);
+                            biteSizeStD.setText("Bite size StD = " + String.format("%.1f",results[5]) + " grams");
                             biteSizeStD.setTextColor(Color.BLUE);
-                            biteFrequency.setText("Bite frequency = " + String.format("%.3f",results[5]) + " bites/min");
+                            biteFrequency.setText("Bite frequency = " + String.format("%.3f",results[6]) + " bites/min");
                             biteFrequency.setTextColor(Color.BLUE);
                         }
                     });
