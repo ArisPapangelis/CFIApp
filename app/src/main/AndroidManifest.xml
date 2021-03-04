@@ -19,12 +19,6 @@
         android:name="com.chaquo.python.android.PyApplication">
 
 
-
-
-
-        <activity
-            android:name=".SkaleActivity"
-            android:label="@string/title_activity_skale"></activity>
         <activity
             android:name=".IndicatorsActivity"
             android:parentActivityName=".PlottingActivity"
