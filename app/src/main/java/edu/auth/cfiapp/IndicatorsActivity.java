@@ -1,14 +1,16 @@
 package edu.auth.cfiapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
 import com.chaquo.python.PyException;
 import com.chaquo.python.PyObject;
@@ -17,8 +19,6 @@ import com.chaquo.python.Python;
 import java.util.Arrays;
 
 public class IndicatorsActivity extends AppCompatActivity {
-
-    //private double plateWeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class IndicatorsActivity extends AppCompatActivity {
         TextView meal = (TextView) findViewById(R.id.mealID);
         meal.setText("MEAL INDICATORS FOR MEAL: " + mealID);
 
-        //plateWeight = intent.getDoubleExtra(PlottingActivity.Extra_PLATE);
+        double plateWeight = intent.getDoubleExtra(PlottingActivity.EXTRA_PLATE, 0);
         double[] time= intent.getDoubleArrayExtra(PlottingActivity.EXTRA_TIME);
         double[] weight= intent.getDoubleArrayExtra(PlottingActivity.EXTRA_WEIGHT);
 
@@ -39,12 +39,14 @@ public class IndicatorsActivity extends AppCompatActivity {
         Log.i("IndicatorsActivity", Arrays.toString(time));
         Log.i("IndicatorsActivity", Arrays.toString(weight));
 
-
-        extractMealIndicators(mealID, time, weight);
+        extractMealIndicators(mealID, time, weight, plateWeight);
 
     }
 
-    private void extractMealIndicators(String mealID, double[] time, double[] weight) {
+
+    private void extractMealIndicators(String mealID, double[] time, double[] weight, double plateWeight) {
+
+        ImageView mealCurve = (ImageView) findViewById(R.id.mealCurveImageView);
 
         TextView a = (TextView) findViewById(R.id.a);
         TextView b = (TextView) findViewById(R.id.b);
@@ -56,16 +58,26 @@ public class IndicatorsActivity extends AppCompatActivity {
         TextView eatingStyle = (TextView) findViewById(R.id.eatingStyle);
         TextView tip = (TextView) findViewById(R.id.tipText);
 
+
         Python py = Python.getInstance();
         PyObject module = py.getModule("extract_cfi");
         new Thread(new Runnable() {
-            public void run()  {
+            public void run() {
                 try {
-                    double[] results = module.callAttr("extract_cfi", time, weight, true, 1, mealID, 0).toJava(double[].class);
+                    byte[] bytes = module.callAttr("extract_cfi", time, weight, true, 1, mealID, plateWeight, true).toJava(byte[].class);
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            a.setText("a = " + String.format("%.5f",results[0]) + " g/s^2");
+                            mealCurve.setImageBitmap(bitmap);
+                        }
+                    });
+
+                    double[] results = module.callAttr("extract_cfi", time, weight, true, 1, mealID, 0, false).toJava(double[].class);
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            a.setText("Food intake deceleration (a) = " + String.format("%.5f", results[0]) + " g/s^2");
                             a.setTextColor(Color.BLUE);
                             if (results[0] > -0.0005) {
                                 eatingStyle.setText("Linear");
@@ -79,25 +91,27 @@ public class IndicatorsActivity extends AppCompatActivity {
                                         "the application's training mode to see what a food intake reference curve looks like.");
                             }
 
-                            b.setText("b = " + String.format("%.5f",results[1]) + " g/s");
+                            b.setText("Initial food intake rate (b) = " + String.format("%.5f", results[1]) + " g/s");
                             b.setTextColor(Color.BLUE);
-                            totalFoodIntake.setText("Total food intake = " + String.format("%.1f",results[2]) + " grams");
+                            totalFoodIntake.setText("Total food intake = " + String.format("%.1f", results[2]) + " grams");
                             totalFoodIntake.setTextColor(Color.BLUE);
-                            averageFoodIntakeRate.setText("Average food intake rate = " + String.format("%.5f",results[3]) + " g/s");
+                            averageFoodIntakeRate.setText("Average food intake rate = " + String.format("%.5f", results[3]) + " g/s");
                             averageFoodIntakeRate.setTextColor(Color.BLUE);
-                            averageBiteSize.setText("Average bite size = " + String.format("%.5f",results[4]) + " grams");
+                            averageBiteSize.setText("Average bite size = " + String.format("%.5f", results[4]) + " grams");
                             averageBiteSize.setTextColor(Color.BLUE);
-                            biteSizeStD.setText("Bite size StD = " + String.format("%.1f",results[5]) + " grams");
+                            biteSizeStD.setText("Bite size StD = " + String.format("%.1f", results[5]) + " grams");
                             biteSizeStD.setTextColor(Color.BLUE);
-                            biteFrequency.setText("Bite frequency = " + String.format("%.3f",results[6]) + " bites/min");
+                            biteFrequency.setText("Bite frequency = " + String.format("%.3f", results[6]) + " bites/min");
                             biteFrequency.setTextColor(Color.BLUE);
                         }
                     });
+
 
                 } catch (PyException e) {
                     Toast.makeText(IndicatorsActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
                 }
             }
         }).start();
+
     }
 }

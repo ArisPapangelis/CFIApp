@@ -32,7 +32,7 @@ def zero_runs(a):
 
 
 
-def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight):
+def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_mode):
     #def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_ID):
 
 
@@ -54,7 +54,10 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight):
     #cfi_raw = cfi.copy()
     
     plt.ioff()
-    plt.figure(meal_ID, figsize=(26, 10.8))
+    if portrait_mode==False:
+        plt.figure(meal_ID, figsize=(26, 10.8))
+    else:
+        plt.figure(meal_ID, figsize=(10.8, 9))
 
     plt.xlabel('Time (seconds)', fontsize = 25)
     plt.ylabel('Weight (grams)', fontsize = 25)
@@ -231,7 +234,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight):
     plt.savefig(f, format="png")
     #plt.show()
     plt.close(meal_ID)
-    if end_of_meal==True:
+    if end_of_meal==True and portrait_mode==False:
         results = np.array([a, b, total_food_intake, average_food_intake_rate, average_bite_size, bite_size_STD, bite_frequency])
         return results
     else:

@@ -42,6 +42,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     public static final String EXTRA_MEALID = "edu.auth.cfiapp.MEALID";
     public static final String EXTRA_TIME = "edu.auth.cfiapp.TIME";
     public static final String EXTRA_WEIGHT = "edu.auth.cfiapp.WEIGHT";
+    public static final String EXTRA_PLATE = "edu.auth.cfiapp.PLATE";
 
 
     // Get the Intent that started this activity and extract the string
@@ -94,16 +95,6 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     protected void onStart(){
         super.onStart();
 
-        Timer extractCFITimer = new Timer();
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                handler.post(extractCFIRunnable);
-            }
-        };
-
-        extractCFITimer.schedule(task, 10 * 1000,5 * 1000);
-
     }
 
     @Override
@@ -142,6 +133,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
 
         Intent indicatorIntent = new Intent(PlottingActivity.this, IndicatorsActivity.class);
         indicatorIntent.putExtra(EXTRA_MEALID, message);
+        indicatorIntent.putExtra(EXTRA_PLATE, plateWeight);
         double[] t;
         double[] w;
         synchronized(time) {
@@ -239,6 +231,15 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
     @Override
     public void onConnectResult(boolean success) {
         if(success){
+            Timer extractCFITimer = new Timer();
+            TimerTask task = new TimerTask() {
+                @Override
+                public void run() {
+                    handler.post(extractCFIRunnable);
+                }
+            };
+            extractCFITimer.schedule(task, 10 * 1000,5 * 1000);
+
             Log.i("PlottingActivity", "Connected");
             startTime =  System.currentTimeMillis();
             previousTime = startTime;
@@ -272,7 +273,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
                     t = time.toArray(new Double[time.size()]);
                     w= weight.toArray(new Double[weight.size()]);
                 }
-                byte[] bytes = module.callAttr("extract_cfi", t, w, false, 1, message, plateWeight).toJava(byte[].class);
+                byte[] bytes = module.callAttr("extract_cfi", t, w, false, 1, message, plateWeight, false).toJava(byte[].class);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                 //System.out.println(i);
                 return bitmap;
