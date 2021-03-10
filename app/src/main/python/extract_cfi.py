@@ -33,8 +33,6 @@ def zero_runs(a):
 
 
 def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_mode):
-    #def extract_cfi(file, initial_sampling_rate, end_of_meal, stable_secs, to, meal_ID):
-
 
     #filepath = join(dirname(__file__), file + ".txt")
     #time, cfi = np.loadtxt(filepath, delimiter = ':', skiprows=1, unpack = True)
@@ -52,7 +50,8 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
     #cfi = cfi[:to]
     
     #cfi_raw = cfi.copy()
-    
+
+    #Initial plot setup
     plt.ioff()
     if portrait_mode==False:
         plt.figure(meal_ID, figsize=(26, 10.8))
@@ -61,12 +60,10 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
 
     plt.xlabel('Time (seconds)', fontsize = 25)
     plt.ylabel('Weight (grams)', fontsize = 25)
-    plt.xlim(0,1000)
-    plt.ylim(0,700)
     plt.title(meal_ID, fontsize = 30)
     plt.xticks(fontsize = 22)
     plt.yticks(fontsize = 22)
-    plt.plot(time,cfi, label = "Initial data")
+    plt.plot(time,cfi, label = "Raw data")
     
     
     
@@ -174,7 +171,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
             time = time[start:end]
     
     #"""
-    index_offset = time[0] * downsampled_rate
+    #index_offset = time[0] * downsampled_rate
     time = time - time[0]
 
     #Plot reference curve if training mode was selected
@@ -185,7 +182,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
         reference_time = np.arange(0, time_to_finish, 1/5)
         reference_weight = np.linspace(0, end_weight, num = len(reference_time))
         reference_coeff = curve_fit(fit_func, reference_time, reference_weight,
-                                    bounds = ([-1, 0], [-0.0005, 2]))[0]
+                                    bounds = ([-1, 1.5], [-0.0006, 2]))[0]
         reference_curve = reference_coeff[0] * reference_time ** 2 + reference_coeff[1] * reference_time
         plt.plot(reference_time, reference_curve, label= "Reference curve")
 
@@ -206,11 +203,8 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
     
     #Fit the extracted CFI curve to a second degree polynomial
     coefficients = curve_fit(fit_func,time,cfi)[0]
-    #coefficients[-1] = 0
     curve = coefficients[0] * time ** 2 + coefficients[1] * time
 
-   
-    
     #a, b, total food intake, average food intake rate, average bite size and standard deviation, bites per minute
     a = coefficients[0]
     b = coefficients[1]
@@ -226,6 +220,16 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
     bite_frequency = 60 * len(bites) / meal_duration
 
     
+    #Set axis limits depending on the course of the meal
+    xlimit = 300
+    ylimit = 300
+    while time[-1] > xlimit:
+        xlimit = xlimit + 100
+    while cfi[-1] > ylimit:
+        ylimit = ylimit + 100
+    plt.xlim(0, xlimit)
+    plt.ylim(0, ylimit)
+
     #Plot extracted cfi curve
     plt.plot(time,curve, label = "Quadratic curve", linewidth = 5, linestyle = '-')
     plt.plot(time,cfi, label = "Extracted CFI", linewidth = 4, alpha=0.6)
@@ -234,7 +238,6 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
 
     f = io.BytesIO()
     plt.savefig(f, format="png")
-    #plt.show()
     plt.close(meal_ID)
     if end_of_meal==True and portrait_mode==False:
         results = np.array([a, b, total_food_intake, average_food_intake_rate, average_bite_size, bite_size_STD, bite_frequency])
