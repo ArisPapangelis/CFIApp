@@ -8,7 +8,7 @@
     tools:context="edu.auth.cfiapp.MainActivity">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/controlMealID"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -64,7 +64,7 @@
         android:text="TESTING MODE INSTRUCTIONS"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/controlMealID" />
 
     <TextView
         android:id="@+id/textView6"
@@ -78,7 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.607"
         app:layout_constraintStart_toEndOf="@+id/textView4"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/controlMealID" />
 
     <TextView
         android:id="@+id/textView7"

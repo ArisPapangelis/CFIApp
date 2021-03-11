@@ -7,17 +7,37 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
+        android:name="com.chaquo.python.android.PyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/cfiapp_icon"
         android:label="@string/app_name"
-
         android:supportsRtl="true"
-        android:theme="@style/Theme.CFIApp"
-        android:name="com.chaquo.python.android.PyApplication">
+        android:theme="@style/Theme.CFIApp">
 
+        <activity
+            android:name=".TrainingModeActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.auth.cfiapp.MainActivity" />
+        </activity>
+
+        <activity
+            android:name=".ControlModeActivity"
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait">
+
+            <!-- The meta-data tag is required if you support API level 15 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.auth.cfiapp.MainActivity" />
+        </activity>
 
         <activity
             android:name=".IndicatorsActivity"
@@ -29,6 +49,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.auth.cfiapp.PlottingActivity" />
         </activity>
+
         <activity
             android:name=".PlottingActivity"
             android:parentActivityName=".MainActivity"
@@ -39,13 +60,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.auth.cfiapp.MainActivity" />
         </activity>
-        <activity android:name=".MainActivity">
+
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>
