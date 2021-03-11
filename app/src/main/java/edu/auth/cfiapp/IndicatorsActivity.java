@@ -79,10 +79,15 @@ public class IndicatorsActivity extends AppCompatActivity {
                         public void run() {
                             a.setText("Food intake deceleration (a) = " + String.format("%.5f", results[0]) + " g/s^2");
                             a.setTextColor(Color.BLUE);
-                            if (results[0] > -0.0005) {
-                                eatingStyle.setText("Linear");
+                            if (results[0] > 0){
+                                eatingStyle.setText("Accelerated");
                                 eatingStyle.setTextColor(Color.RED);
                                 tip.setText("You have a higher risk of developing disordered eating. Consider training " +
+                                        "away this eating behaviour through the application's training mode.");
+                            } else if (results[0] > -0.0005) {
+                                eatingStyle.setText("Linear");
+                                eatingStyle.setTextColor(Color.RED);
+                                tip.setText("You are at risk of developing disordered eating. Consider training " +
                                         "away this eating behaviour through the application's training mode.");
                             } else {
                                 eatingStyle.setText("Decelerated");
@@ -112,6 +117,5 @@ public class IndicatorsActivity extends AppCompatActivity {
                 }
             }
         }).start();
-
     }
 }
