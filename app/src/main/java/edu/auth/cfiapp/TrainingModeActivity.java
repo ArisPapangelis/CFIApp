@@ -1,5 +1,8 @@
 package edu.auth.cfiapp;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,13 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.atomax.android.skaleutils.SkaleHelper;
 
-
-public class MainActivity extends AppCompatActivity implements SkaleHelper.Listener {
+public class TrainingModeActivity extends AppCompatActivity implements SkaleHelper.Listener {
 
     public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.MEALID";
     public static final String EXTRA_PLATE = "edu.auth.cfiapp.PLATE";
@@ -31,7 +30,8 @@ public class MainActivity extends AppCompatActivity implements SkaleHelper.Liste
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_training_mode);
+
 
         mSkaleHelper = new SkaleHelper(this);
         mSkaleHelper.setListener(this);
@@ -64,31 +64,19 @@ public class MainActivity extends AppCompatActivity implements SkaleHelper.Liste
         //mSkaleHelper.disconnect();
     }
 
-
     // Called when the user taps the TEST or TRAIN button
-    public void confirmMeal(View view) {
+    public void confirmTrainingMeal(View view) {
         Intent intent = new Intent(this, PlottingActivity.class);
         EditText editText = (EditText) findViewById(R.id.controlMealID);
         String message = editText.getText().toString();
-        if (view.getId()==R.id.buttonTrain){
-            if (plateWeight > 5 && currentScaleWeight > 50){
-                intent.putExtra(EXTRA_PLATE, plateWeight);
-                intent.putExtra(EXTRA_MESSAGE, message);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Sample the weight of the plate first, " +
-                        "and then fill the plate to start the meal", Toast.LENGTH_SHORT).show();
-            }
 
+        if (plateWeight > 5 && currentScaleWeight > 50){
+            intent.putExtra(EXTRA_PLATE, plateWeight);
+            intent.putExtra(EXTRA_MESSAGE, message);
+            startActivity(intent);
         } else {
-            if (currentScaleWeight > 50) {
-                intent.putExtra(EXTRA_PLATE, 0);
-                intent.putExtra(EXTRA_MESSAGE, message);
-                startActivity(intent);
-            } else {
-                Toast.makeText(this, "Place the filled plate on " +
-                        "the scale to start the meal", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(this, "Sample the weight of the plate first, " +
+                    "and then fill the plate to start the meal", Toast.LENGTH_SHORT).show();
         }
 
     }
