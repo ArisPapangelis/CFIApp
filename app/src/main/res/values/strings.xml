@@ -1,5 +1,4 @@
 <resources>
     <string name="app_name">CFIApp</string>
-    <string name="edit_message">Enter a meal ID</string>
-    <string name="title_activity_skale">SkaleActivity</string>
+    <string name="edit_message">Enter a user ID</string>
 </resources>

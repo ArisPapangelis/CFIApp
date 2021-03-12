@@ -16,9 +16,6 @@ import com.atomax.android.skaleutils.SkaleHelper;
 
 public class TrainingModeActivity extends AppCompatActivity implements SkaleHelper.Listener {
 
-    public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.MEALID";
-    public static final String EXTRA_PLATE = "edu.auth.cfiapp.PLATE";
-
     private static final int REQUEST_BT_ENABLE = 2;
     private static final int REQUEST_BT_PERMISSION = 1;
 
@@ -64,15 +61,15 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
         //mSkaleHelper.disconnect();
     }
 
-    // Called when the user taps the TEST or TRAIN button
+    // Called when the user taps the TRAIN button
     public void confirmTrainingMeal(View view) {
         Intent intent = new Intent(this, PlottingActivity.class);
-        EditText editText = (EditText) findViewById(R.id.controlMealID);
+        EditText editText = (EditText) findViewById(R.id.trainingMealID);
         String message = editText.getText().toString();
 
         if (plateWeight > 5 && currentScaleWeight > 50){
-            intent.putExtra(EXTRA_PLATE, plateWeight);
-            intent.putExtra(EXTRA_MESSAGE, message);
+            intent.putExtra(MainActivity.EXTRA_PLATE, plateWeight);
+            intent.putExtra(MainActivity.EXTRA_MESSAGE, message);
             startActivity(intent);
         } else {
             Toast.makeText(this, "Sample the weight of the plate first, " +
