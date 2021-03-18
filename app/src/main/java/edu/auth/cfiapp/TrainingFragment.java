@@ -1,6 +1,7 @@
 package edu.auth.cfiapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -68,15 +69,15 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
 
         if (id==R.id.buttonTrain){
             intent = new Intent(getActivity(), TrainingModeActivity.class);
-        } else {
-            intent = new Intent(getActivity(), ControlModeActivity.class);
+            startActivity(intent);
         }
-        startActivity(intent);
+
     }
 
     protected void receiveData(String message)
     {
         selectedUser = message;
         selectedUserTextView.setText("The currently selected user is: " + selectedUser);
+        selectedUserTextView.setTextColor(Color.BLUE);
     }
 }

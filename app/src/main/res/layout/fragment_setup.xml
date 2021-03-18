@@ -11,9 +11,9 @@
     <Button
         android:id="@+id/buttonControl"
         android:layout_width="107dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="168dp"
-        android:text="CONTROL"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="200dp"
+        android:text="Start control meal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
@@ -46,8 +46,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="280dp"
-        android:text="Create a training schedule:"
+        android:layout_marginTop="400dp"
+        android:text="Consult an expert to create a training schedule:"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/design_default_color_error"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -87,15 +89,43 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextNumberOfMeals" />
 
     <TextView
-        android:id="@+id/textViewSelectedUser"
+        android:id="@+id/textViewSelectedUserSetup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView17"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="16dp"
+        android:text="We need to get three control meals from you, in order to establish a baseline eating behaviour."
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSelectedUserSetup" />
+
+    <TextView
+        android:id="@+id/textViewCompletedControlMeals"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Your number of completed meals is: 0 out of 3"
+        android:textColor="@color/design_default_color_primary_variant"
+        app:layout_constraintBottom_toTopOf="@+id/buttonControl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

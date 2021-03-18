@@ -1,28 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout  xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:keepScreenOn="true"
     tools:context=".ProfileFragment">
-
-    <Button
-        android:id="@+id/buttonCreateUser"
-        android:layout_width="124dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="110dp"
-        android:layout_marginEnd="16dp"
-        android:text="Create user"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/userID"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="220dp"
         android:ems="10"
         android:hint="Enter a user ID"
         android:inputType="textPersonName"
@@ -33,11 +23,13 @@
         android:id="@+id/buttonSelectUser"
         android:layout_width="124dp"
         android:layout_height="54dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="Select user"
+        app:layout_constraintBottom_toBottomOf="@+id/userID"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/buttonCreateUser" />
+        app:layout_constraintStart_toEndOf="@+id/userID"
+        app:layout_constraintTop_toTopOf="@+id/userID" />
 
     <TextView
         android:id="@+id/textView12"
@@ -67,7 +59,7 @@
         android:layout_height="39dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Save user info"
+        android:text="Save user"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewBMI" />
 
@@ -136,7 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:text="Weight:"
+        android:text="Weight(kg):"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toEndOf="@+id/editTextSex"
         app:layout_constraintTop_toBottomOf="@+id/textView13" />
@@ -147,7 +139,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="52dp"
-        android:text="Height:"
+        android:text="Height(m):"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
         app:layout_constraintStart_toEndOf="@+id/editTextAge"
         app:layout_constraintTop_toBottomOf="@+id/userID" />
@@ -188,6 +180,16 @@
         app:layout_constraintStart_toEndOf="@+id/textView16"
         app:layout_constraintTop_toTopOf="@+id/textView16" />
 
+    <TextView
+        android:id="@+id/textViewSelectedUserProfile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

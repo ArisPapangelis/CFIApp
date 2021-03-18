@@ -1,6 +1,7 @@
 package edu.auth.cfiapp;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -31,7 +33,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
 
     private String selectedUser;
 
-    private TextView selectedUserTextView;
+    private TextView selectedUserTextView, completedControlMealsTextView;
 
     final Handler controlMealsHandler = new Handler();
     Runnable updateControlMealsRunnable = new Runnable() {
@@ -60,17 +62,29 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         Button b = (Button) v.findViewById(R.id.buttonControl);
         b.setOnClickListener(this);
 
-        selectedUserTextView = (TextView) v.findViewById(R.id.textViewSelectedUser);
+        selectedUserTextView = (TextView) v.findViewById(R.id.textViewSelectedUserSetup);
+        completedControlMealsTextView = (TextView) v.findViewById(R.id.textViewCompletedControlMeals);
 
 
         return v;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        completedControlMealsTextView.setText(String.format("Your number of completed meals is: %d out of 3", getCompletedMeals()));
+    }
+
+    private int getCompletedMeals() {
+
+        return 1;
+    }
 
     protected void receiveData(String message)
     {
         selectedUser = message;
         selectedUserTextView.setText("The currently selected user is: " + selectedUser);
+        selectedUserTextView.setTextColor(Color.BLUE);
     }
 
 
@@ -80,12 +94,15 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         int id = view.getId();
         Intent intent;
 
-        if (id==R.id.buttonTrain){
-            intent = new Intent(getActivity(), TrainingModeActivity.class);
-        } else {
+        if (id==R.id.buttonControl && !selectedUser.equals("")) {
             intent = new Intent(getActivity(), ControlModeActivity.class);
+            intent.putExtra(MainActivity.EXTRA_USER, selectedUser);
+            startActivity(intent);
         }
-        startActivity(intent);
+        else {
+            Toast.makeText(getActivity(), "Please select a user first in the Profile tab", Toast.LENGTH_SHORT).show();
+        }
+
 
     }
 }
