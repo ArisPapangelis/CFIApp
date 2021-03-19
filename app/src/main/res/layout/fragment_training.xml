@@ -10,12 +10,12 @@
     <Button
         android:id="@+id/buttonTrain"
         android:layout_width="107dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="280dp"
-        android:text="TRAIN"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="Start training meal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView18" />
 
     <TextView
         android:id="@+id/textViewSelectedUserTraining"
@@ -27,6 +27,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="16dp"
+        android:text="Train yourself in adopting a healthy and balanced eating rate during your meals by following the instructions on your screen while eating."
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSelectedUserTraining" />
+
+    <TextView
+        android:id="@+id/textViewCompletedTrainingMeals"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="No training schedule found, please create one in the Setup tab."
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/buttonTrain" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

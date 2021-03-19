@@ -12,12 +12,12 @@
         android:id="@+id/buttonControl"
         android:layout_width="107dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="32dp"
         android:text="Start control meal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
     <EditText
         android:id="@+id/editTextNumberOfMeals"
@@ -33,11 +33,11 @@
 
     <Button
         android:id="@+id/buttonCreateSchedule"
-        android:layout_width="0dp"
+        android:layout_width="173dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:text="Create schedule"
+        android:text="Create training schedule"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextStepSize" />
 
@@ -106,7 +106,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="16dp"
-        android:text="We need to get three control meals from you, in order to establish a baseline eating behaviour."
+        android:text="You need to complete three control meals, in order to tune the system and establish a baseline eating behaviour. Each meal should be the main meal of the day."
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -119,13 +119,12 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Your number of completed meals is: 0 out of 3"
+        android:text="Your number of completed meals is: "
         android:textColor="@color/design_default_color_primary_variant"
-        app:layout_constraintBottom_toTopOf="@+id/buttonControl"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView17" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonControl" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

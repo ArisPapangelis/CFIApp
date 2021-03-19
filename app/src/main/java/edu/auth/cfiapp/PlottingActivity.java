@@ -144,8 +144,6 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
 
     private void writeMealToFile(double[] t, double[] w, String mealID) {
         File path = new File(getApplicationContext().getExternalFilesDir(null), "Meals");
-        //File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), "CFIApp_Meals");
-
         if (!path.isDirectory()){
             path.mkdirs();
         }

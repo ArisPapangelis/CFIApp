@@ -19,6 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,8 +42,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     public static ProfileFragment newInstance() {
-        ProfileFragment fragment = new ProfileFragment();
-        return fragment;
+        return new ProfileFragment();
     }
 
 
@@ -49,7 +50,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private String selectedUser;
     private EditText userID;
-    private Button b1, b2;
     private EditText ageEditText, heightEditText, sexEditText, weightEditText, notesEditText;
     private TextView bmiTextView, selectedUserTextView;
 
@@ -68,9 +68,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
 
 
-        b1 = (Button) v.findViewById(R.id.buttonSelectUser);
+        Button b1 = (Button) v.findViewById(R.id.buttonSelectUser);
         b1.setOnClickListener(this);
-        b2 = (Button) v.findViewById(R.id.buttonSaveUserInfo);
+        Button b2 = (Button) v.findViewById(R.id.buttonSaveUserInfo);
         b2.setOnClickListener(this);
 
         userID = (EditText) v.findViewById(R.id.userID);
@@ -91,7 +91,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NotNull Context context) {
         super.onAttach(context);
 
         try {
