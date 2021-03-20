@@ -55,23 +55,23 @@
 
     <RadioGroup
         android:id="@+id/radioGroupDisorder"
-        android:layout_width="147dp"
-        android:layout_height="66dp"
+        android:layout_width="142dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/editTextNumberOfMeals">
 
         <RadioButton
-            android:id="@+id/radioObesity"
+            android:id="@+id/radioReduceFoodIntake"
             android:layout_width="wrap_content"
-            android:layout_height="34dp"
-            android:text="Obesity" />
+            android:layout_height="wrap_content"
+            android:text="Reduce food intake" />
 
         <RadioButton
-            android:id="@+id/radioAnorexia"
+            android:id="@+id/radioIncreaseFoodIntake"
             android:layout_width="wrap_content"
-            android:layout_height="31dp"
-            android:text="Anorexia nervosa" />
+            android:layout_height="wrap_content"
+            android:text="Increase food intake" />
 
 
     </RadioGroup>
@@ -84,7 +84,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Step size in grams"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextNumberOfMeals" />
 

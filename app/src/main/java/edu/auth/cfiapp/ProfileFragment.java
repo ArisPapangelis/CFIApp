@@ -30,21 +30,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class ProfileFragment extends Fragment implements View.OnClickListener {
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-    public static ProfileFragment newInstance() {
-        return new ProfileFragment();
-    }
-
 
     SendUser SU;
 
@@ -54,12 +41,34 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private TextView bmiTextView, selectedUserTextView;
 
 
+    public ProfileFragment() {
+        // Required empty public constructor
+    }
+
+    public static ProfileFragment newInstance() {
+        return new ProfileFragment();
+    }
+
+    interface SendUser {
+        void sendUser(String message);
+    }
+
+    @Override
+    public void onAttach(@NotNull Context context) {
+        super.onAttach(context);
+
+        try {
+            SU = (SendUser) getActivity();
+        } catch (ClassCastException e) {
+            throw new ClassCastException("Error in retrieving data. Please try again");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         selectedUser = "";
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -84,21 +93,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         selectedUserTextView = (TextView) v.findViewById((R.id.textViewSelectedUserProfile));
 
         return v;
-    }
-
-    interface SendUser {
-        void sendData(String message);
-    }
-
-    @Override
-    public void onAttach(@NotNull Context context) {
-        super.onAttach(context);
-
-        try {
-            SU = (SendUser) getActivity();
-        } catch (ClassCastException e) {
-            throw new ClassCastException("Error in retrieving data. Please try again");
-        }
     }
 
 
@@ -165,7 +159,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         if (path.isFile() && !user.equals("")) {
             selectedUser = user;
             Toast.makeText(getActivity(), "Selected user " + selectedUser, Toast.LENGTH_SHORT).show();
-            SU.sendData(selectedUser);
+            SU.sendUser(selectedUser);
             selectedUserTextView.setText("The currently selected user is: " + selectedUser);
             selectedUserTextView.setTextColor(Color.BLUE);
 
@@ -184,8 +178,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     notesEditText.setText(info[5]);
                 }
                 csvReader.close();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -193,7 +185,5 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         } else {
             Toast.makeText(getActivity(), "User doesn't exist", Toast.LENGTH_SHORT).show();
         }
-
     }
 }
-

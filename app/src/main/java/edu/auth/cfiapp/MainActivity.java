@@ -9,7 +9,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.tabs.TabLayout;
 
 
-public class MainActivity extends AppCompatActivity implements ProfileFragment.SendUser{
+public class MainActivity extends AppCompatActivity implements ProfileFragment.SendUser, SetupFragment.SendSchedule{
 
     public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.MEALID";
     public static final String EXTRA_PLATE = "edu.auth.cfiapp.PLATE";
@@ -54,21 +54,30 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.S
     }
 
     @Override
-    public void sendData(String message) {
+    public void sendUser(String message) {
         String tag = "android:switcher:" + R.id.viewPager + ":" + 1;
         SetupFragment setup = (SetupFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (setup != null) {
-            setup.receiveData(message);
+            setup.receiveUser(message);
         }
 
         tag = "android:switcher:" + R.id.viewPager + ":" + 2;
         TrainingFragment training = (TrainingFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (training != null) {
-            training.receiveData(message);
+            training.receiveUser(message);
         }
     }
 
 
+    @Override
+    public void sendSchedule(int message) {
+        String tag = "android:switcher:" + R.id.viewPager + ":" + 2;
+        TrainingFragment training = (TrainingFragment) getSupportFragmentManager().findFragmentByTag(tag);
+        if (training != null) {
+            training.receiveSchedule(message);
+        }
+
+    }
 }
 
 
