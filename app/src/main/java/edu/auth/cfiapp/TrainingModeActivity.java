@@ -14,41 +14,57 @@ import android.widget.Toast;
 
 import com.atomax.android.skaleutils.SkaleHelper;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Locale;
+
 public class TrainingModeActivity extends AppCompatActivity implements SkaleHelper.Listener {
 
     private static final int REQUEST_BT_ENABLE = 2;
     private static final int REQUEST_BT_PERMISSION = 1;
 
+
     private SkaleHelper mSkaleHelper;
-    private TextView mWeightTextView;
+    private TextView mWeightTextView, percentageFilledTextView;
     private double plateWeight;
     private double currentScaleWeight;
+    private String selectedUser;
+    private double goalFoodIntake;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_training_mode);
 
+        Intent intent = getIntent();
+        selectedUser = intent.getStringExtra(MainActivity.EXTRA_USERID);
 
         mSkaleHelper = new SkaleHelper(this);
         mSkaleHelper.setListener(this);
         mWeightTextView = (TextView) findViewById(R.id.mWeightTextView);
+        percentageFilledTextView = (TextView) findViewById(R.id.textViewPercentageFilled);
         plateWeight = 0;
         currentScaleWeight = 0;
+        goalFoodIntake = 0;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        if(mSkaleHelper.isBluetoothEnable()){
+        if(mSkaleHelper.isBluetoothEnable()) {
             boolean hasPermission = SkaleHelper.hasPermission(this);
-            if(hasPermission){
+            if(hasPermission) {
                 mSkaleHelper.resume();
-            }else{
+            }
+            else {
                 SkaleHelper.requestBluetoothPermission(this, REQUEST_BT_PERMISSION);
             }
-        }else{
+        }
+        else {
             Intent turnOn = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(turnOn, REQUEST_BT_ENABLE);
         }
@@ -65,28 +81,59 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
     public void confirmTrainingMeal(View view) {
         Intent intent = new Intent(this, PlottingActivity.class);
         EditText editText = (EditText) findViewById(R.id.trainingMealID);
-        String message = editText.getText().toString();
+        String mealID = editText.getText().toString();
 
-        if (plateWeight > 5 && currentScaleWeight > 50){
-            intent.putExtra(MainActivity.EXTRA_PLATE, plateWeight);
-            intent.putExtra(MainActivity.EXTRA_MESSAGE, message);
-            startActivity(intent);
-        } else {
+        if (plateWeight > 5 && currentScaleWeight > 50) {
+            if (!mealID.equals("")) {
+                intent.putExtra(MainActivity.EXTRA_PLATE, plateWeight);
+                intent.putExtra(MainActivity.EXTRA_MEALID, mealID);
+                intent.putExtra(MainActivity.EXTRA_USERID, selectedUser);
+                startActivity(intent);
+            }
+            else {
+                Toast.makeText(this, "Please enter a meal ID first", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
             Toast.makeText(this, "Sample the weight of the plate first, " +
                     "and then fill the plate to start the meal", Toast.LENGTH_SHORT).show();
         }
-
     }
 
     //Called when the user taps the SAMPLE button
-    public void samplePlateWeight(View view){
-        if (currentScaleWeight < 5){
-            Toast.makeText(this, "No plate detected, place it on the scale", Toast.LENGTH_SHORT).show();
-        } else{
-            plateWeight = currentScaleWeight;
-            Toast.makeText(this, "Plate weight sampled successfully", Toast.LENGTH_SHORT).show();
+    public void samplePlateWeight(View view) {
+        if (currentScaleWeight < 5) {
+            Toast.makeText(this, "No plate detected, please place it on the scale", Toast.LENGTH_SHORT).show();
         }
+        else {
+            plateWeight = currentScaleWeight;
+            Toast.makeText(this, String.format(Locale.US,"Plate weight sampled successfully: %.2f grams", plateWeight), Toast.LENGTH_SHORT).show();
+            goalFoodIntake = getGoalFoodIntake();
+        }
+    }
 
+    private double getGoalFoodIntake() {
+        File readPath = new File(getApplicationContext().getExternalFilesDir(null), selectedUser);
+        readPath = new File(readPath, "training_schedule.csv");
+        if (readPath.isFile()) {
+            BufferedReader csvReader;
+            try {
+                //Read the goal food intake for the current meal of the training schedule
+                csvReader = new BufferedReader(new FileReader(readPath));
+                csvReader.readLine(); //Consume first line
+                csvReader.readLine(); //Consume second line
+                String thirdLine = csvReader.readLine();
+                String mealNumber = csvReader.readLine().split(";")[0];
+                csvReader.close();
+                if (thirdLine != null && mealNumber != null) {
+                    String[] totalFoodIntakes = thirdLine.split(";");
+                    return Double.parseDouble(totalFoodIntakes[Integer.parseInt(mealNumber)]);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -99,9 +146,14 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
 
     @Override
     public void onWeightUpdate(float weight) {
-        mWeightTextView.setText(String.format("%1.1f g", weight));
+        mWeightTextView.setText(String.format(Locale.US,"%1.1f g", weight));
         currentScaleWeight = weight;
+        if (plateWeight!=0) {
+            double percentageFilled = (weight - plateWeight) / (goalFoodIntake + plateWeight);
+            percentageFilledTextView.setText(String.format(Locale.US, "%.2f %%", percentageFilled));
+        }
     }
+
 
 
     @Override

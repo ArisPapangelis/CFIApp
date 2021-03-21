@@ -32,7 +32,7 @@ def zero_runs(a):
 
 
 
-def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_mode):
+def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, portrait_mode):
 
     #filepath = join(dirname(__file__), file + ".txt")
     #time, cfi = np.loadtxt(filepath, delimiter = ':', skiprows=1, unpack = True)
@@ -182,7 +182,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, portrait_
         reference_time = np.arange(0, time_to_finish, 1/5)
         reference_weight = np.linspace(0, end_weight, num = len(reference_time))
         reference_coeff = curve_fit(fit_func, reference_time, reference_weight,
-                                    bounds = ([-1, 1.5], [-0.0006, 2]))[0]
+                                    bounds = ([-1, 1.5], [goal_a, 2]))[0]
         reference_curve = reference_coeff[0] * reference_time ** 2 + reference_coeff[1] * reference_time
         plt.plot(reference_time, reference_curve, label= "Reference curve")
 

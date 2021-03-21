@@ -6,25 +6,35 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class ControlModeActivity extends AppCompatActivity {
 
-    private double plateWeight;
+    private String selectedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_control_mode);
 
-        plateWeight = 0;
+        Intent intent = getIntent();
+        selectedUser = intent.getStringExtra(MainActivity.EXTRA_USERID);
     }
 
+    //Called when the user presses the START MEAL button
     public void confirmControlMeal(View view) {
         Intent intent = new Intent(this, PlottingActivity.class);
         EditText editText = (EditText) findViewById(R.id.controlMealID);
-        String message = editText.getText().toString();
-        intent.putExtra(MainActivity.EXTRA_PLATE, plateWeight);
-        intent.putExtra(MainActivity.EXTRA_MESSAGE, message);
-        startActivity(intent);
+        String mealID = editText.getText().toString();
+        if (!mealID.equals("")) {
+            intent.putExtra(MainActivity.EXTRA_PLATE, 0);
+            intent.putExtra(MainActivity.EXTRA_MEALID, mealID);
+            intent.putExtra(MainActivity.EXTRA_USERID, selectedUser);
+            startActivity(intent);
+        }
+        else {
+            Toast.makeText(this, "Please enter a meal ID first", Toast.LENGTH_SHORT).show();
+        }
+
     }
 }

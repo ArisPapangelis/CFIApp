@@ -11,11 +11,10 @@ import com.google.android.material.tabs.TabLayout;
 
 public class MainActivity extends AppCompatActivity implements ProfileFragment.SendUser, SetupFragment.SendSchedule{
 
-    public static final String EXTRA_MESSAGE = "edu.auth.cfiapp.MEALID";
+    public static final String EXTRA_MEALID = "edu.auth.cfiapp.MEALID";
     public static final String EXTRA_PLATE = "edu.auth.cfiapp.PLATE";
-    public static final String EXTRA_USER = "edu.auth.cfiapp.USER";
+    public static final String EXTRA_USERID = "edu.auth.cfiapp.USER";
 
-    private TabLayout tabLayout;
     private ViewPager viewPager;
 
 
@@ -24,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.S
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tabLayout=(TabLayout)findViewById(R.id.tabLayout);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         viewPager=(ViewPager)findViewById(R.id.viewPager);
         viewPager.setOffscreenPageLimit(2);
 

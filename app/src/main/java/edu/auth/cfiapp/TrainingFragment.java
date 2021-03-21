@@ -63,19 +63,18 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         File readPath = new File(getActivity().getExternalFilesDir(null), selectedUser);
         readPath = new File(readPath, "training_schedule.csv");
         if (!selectedUser.equals("") && readPath.isFile()){
-            completedTrainingMealsTextView.setText(String.format("Training schedule found! %d out of %d training meals completed", getNumberOfMeals(true), getNumberOfMeals(false)));
+            completedTrainingMealsTextView.setText(String.format("Training schedule found! %d out of %d training meals completed", getNumberOfTrainingMeals(true), getNumberOfTrainingMeals(false)));
             completedTrainingMealsTextView.setTextColor(Color.GREEN);
         }
     }
 
-    private int getNumberOfMeals(boolean completed) {
+    private int getNumberOfTrainingMeals(boolean completed) {
         File readPath = new File(getActivity().getExternalFilesDir(null), selectedUser);
         readPath = new File(readPath, "training_schedule.csv");
-        BufferedReader csvReader = null;
         try {
-            //Read the meal indicators of the already completed control meals
-            csvReader = new BufferedReader(new FileReader(readPath));
-            int totalNumberOfMeals = csvReader.readLine().split(";").length; //Consume first line
+            //Read the parameters of the created training schedule
+            BufferedReader csvReader = new BufferedReader(new FileReader(readPath));
+            int totalNumberOfMeals = csvReader.readLine().split(";").length;
             csvReader.readLine(); //Consume second line
             csvReader.readLine(); //Consume third line
             int numberOfCompletedMeals = Integer.parseInt(csvReader.readLine().split(";")[0]);
@@ -96,15 +95,19 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        Intent intent;
 
-        File schedule = new File(getActivity().getExternalFilesDir(null), selectedUser);
-        schedule = new File(schedule, "training_schedule.csv");
-        if (id==R.id.buttonTrain && !selectedUser.equals("")){
+        if (id==R.id.buttonTrain && !selectedUser.equals("")) {
+            File schedule = new File(getActivity().getExternalFilesDir(null), selectedUser);
+            schedule = new File(schedule, "training_schedule.csv");
             if (schedule.isFile()) {
-                intent = new Intent(getActivity(), TrainingModeActivity.class);
-                intent.putExtra(MainActivity.EXTRA_USER, selectedUser);
-                startActivity(intent);
+                if (getNumberOfTrainingMeals(true) < getNumberOfTrainingMeals(false)) {
+                    Intent intent = new Intent(getActivity(), TrainingModeActivity.class);
+                    intent.putExtra(MainActivity.EXTRA_USERID, selectedUser);
+                    startActivity(intent);
+                }
+                else {
+                    Toast.makeText(getActivity(), "You have completed all training meals! Please create a new training schedule", Toast.LENGTH_SHORT).show();
+                }
             }
             else {
                 Toast.makeText(getActivity(), "Please create a training schedule for the currently selected user", Toast.LENGTH_SHORT).show();
@@ -115,8 +118,7 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    protected void receiveUser(String message)
-    {
+    protected void receiveUser(String message) {
         selectedUser = message;
         selectedUserTextView.setText("The currently selected user is: " + selectedUser);
         selectedUserTextView.setTextColor(Color.BLUE);
@@ -124,7 +126,7 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         File readPath = new File(getActivity().getExternalFilesDir(null), selectedUser);
         readPath = new File(readPath, "training_schedule.csv");
         if (!selectedUser.equals("") && readPath.isFile()){
-            completedTrainingMealsTextView.setText(String.format("Training schedule found! %d out of %d training meals completed", getNumberOfMeals(true), getNumberOfMeals(false)));
+            completedTrainingMealsTextView.setText(String.format("Training schedule found! %d out of %d training meals completed", getNumberOfTrainingMeals(true), getNumberOfTrainingMeals(false)));
             completedTrainingMealsTextView.setTextColor(Color.GREEN);
         }
     }

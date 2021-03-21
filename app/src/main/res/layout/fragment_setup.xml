@@ -12,7 +12,7 @@
         android:id="@+id/buttonControl"
         android:layout_width="107dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="16dp"
         android:text="Start control meal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.468"
@@ -43,15 +43,17 @@
 
     <TextView
         android:id="@+id/textView19"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="16dp"
         android:text="Consult an expert to create a training schedule:"
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/design_default_color_error"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewCompletedControlMeals" />
 
     <RadioGroup
         android:id="@+id/radioGroupDisorder"
@@ -95,6 +97,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:text="No user currently selected."
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -106,8 +110,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="16dp"
-        android:text="You need to complete three control meals, in order to tune the system and establish a baseline eating behaviour. Each meal should be the main meal of the day."
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:text="You need to complete three control meals, in order to tune the system and establish a baseline eating behaviour.\n\nEach meal should be the main meal of the day."
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewSelectedUserSetup" />
@@ -119,7 +123,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Your number of completed meals is: "
+        android:text="Please select a user in the Profile tab to view your number of completed control meals."
+        android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textColor="@color/design_default_color_primary_variant"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/nextActivity"
+        app:layout_constraintEnd_toStartOf="@+id/buttonEndMeal"
         app:layout_constraintStart_toStartOf="parent"
         tools:srcCompat="@color/white" />
 
     <Button
-        android:id="@+id/nextActivity"
+        android:id="@+id/buttonEndMeal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
@@ -36,7 +36,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:text="weight"
-        app:layout_constraintBottom_toTopOf="@+id/nextActivity"
+        app:layout_constraintBottom_toTopOf="@+id/buttonEndMeal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,6 +50,6 @@
         android:text="battery"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/nextActivity" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonEndMeal" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

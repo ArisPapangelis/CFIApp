@@ -43,8 +43,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
     }
 
     public static SetupFragment newInstance() {
-        SetupFragment fragment = new SetupFragment();
-        return fragment;
+        return new SetupFragment();
     }
 
     interface SendSchedule {
@@ -96,11 +95,11 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
         if (!selectedUser.equals("")){
-            completedControlMealsTextView.setText(String.format("Your number of completed meals is: %d out of %d", getCompletedMeals(), NUMBER_OF_CONTROL_MEALS));
+            completedControlMealsTextView.setText(String.format("Your number of completed meals is: %d out of %d", getCompletedControlMeals(), NUMBER_OF_CONTROL_MEALS));
         }
     }
 
-    private int getCompletedMeals() {
+    private int getCompletedControlMeals() {
         try {
             File path = new File(getActivity().getExternalFilesDir(null), selectedUser + File.separator + "control_meals");
             FilenameFilter filter = new FilenameFilter() {
@@ -121,12 +120,11 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         return -1;
     }
 
-    protected void receiveUser(String message)
-    {
+    protected void receiveUser(String message) {
         selectedUser = message;
         selectedUserTextView.setText("The currently selected user is: " + selectedUser);
         selectedUserTextView.setTextColor(Color.BLUE);
-        completedControlMealsTextView.setText(String.format("Your number of completed meals is: %d out of %d", getCompletedMeals(), NUMBER_OF_CONTROL_MEALS));
+        completedControlMealsTextView.setText(String.format("Your number of completed meals is: %d out of %d", getCompletedControlMeals(), NUMBER_OF_CONTROL_MEALS));
     }
 
 
@@ -137,9 +135,9 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         Intent intent;
 
         if (id == R.id.buttonControl && !selectedUser.equals("")) {
-            if (getCompletedMeals() < NUMBER_OF_CONTROL_MEALS) {
+            if (getCompletedControlMeals() < NUMBER_OF_CONTROL_MEALS) {
                 intent = new Intent(getActivity(), ControlModeActivity.class);
-                intent.putExtra(MainActivity.EXTRA_USER, selectedUser);
+                intent.putExtra(MainActivity.EXTRA_USERID, selectedUser);
                 startActivity(intent);
             }
             else {
@@ -147,7 +145,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
             }
         }
         else if (id == R.id.buttonCreateSchedule && !selectedUser.equals("")) {
-            if (getCompletedMeals() >= NUMBER_OF_CONTROL_MEALS) {
+            if (getCompletedControlMeals() >= NUMBER_OF_CONTROL_MEALS) {
                 createTrainingSchedule();
             }
             else {
@@ -173,8 +171,8 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         writePath = new File(writePath, "training_schedule.csv");
 
         if (readPath.isFile() && !writePath.isFile()) {
-            BufferedReader csvReader = null;
-            FileWriter csvWriter = null;
+            BufferedReader csvReader;
+            FileWriter csvWriter;
             try {
                 //Read the meal indicators of the already completed control meals
                 csvReader = new BufferedReader(new FileReader(readPath));

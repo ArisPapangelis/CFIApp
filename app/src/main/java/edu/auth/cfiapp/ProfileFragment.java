@@ -116,10 +116,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         String sex = sexEditText.getText().toString();
         String height = heightEditText.getText().toString();
         String weight = weightEditText.getText().toString();
-        //String bmi = bmiTextView.getText().toString();
         String notes = notesEditText.getText().toString();
 
-        FileWriter csvWriter = null;
         try {
             if (!age.equals("") && !sex.equals("") && !height.equals("") && !weight.equals("") && !notes.equals("") && !user.equals("")) {
                 if (!path.isDirectory()){
@@ -130,7 +128,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                     mealsPath.mkdirs();
                 }
                 path = new File(path, user + "_info.csv");
-                csvWriter = new FileWriter(path);
+                FileWriter csvWriter = new FileWriter(path);
                 csvWriter.append(String.format(Locale.US,"Age;Sex;Height;Weight;BMI;Notes%n"));
                 csvWriter.append(String.format(Locale.US,"%d;%s;%.2f;%.2f;%.2f;%s",
                         Integer.parseInt(age), sex, Float.parseFloat(height), Float.parseFloat(weight), calculateBMI(height, weight), notes));
@@ -163,9 +161,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             selectedUserTextView.setText("The currently selected user is: " + selectedUser);
             selectedUserTextView.setTextColor(Color.BLUE);
 
-            BufferedReader csvReader = null;
             try {
-                csvReader = new BufferedReader(new FileReader(path));
+                BufferedReader csvReader = new BufferedReader(new FileReader(path));
                 csvReader.readLine(); //Consume first line
                 String row;
                 while ((row = csvReader.readLine()) != null) {
