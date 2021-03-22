@@ -12,10 +12,9 @@
         android:id="@+id/buttonControl"
         android:layout_width="107dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
         android:layout_marginTop="16dp"
         android:text="Start control meal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.468"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
@@ -130,6 +129,30 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonControl" />
+
+    <Button
+        android:id="@+id/buttonDeleteMeal"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginEnd="64dp"
+        android:text="Delete control meal"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonControl"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonControl"
+        app:layout_constraintTop_toTopOf="@+id/buttonControl" />
+
+    <Button
+        android:id="@+id/buttonDeleteSchedule"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:text="Delete training schedule"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonCreateSchedule"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/buttonCreateSchedule"
+        app:layout_constraintTop_toTopOf="@+id/buttonCreateSchedule" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

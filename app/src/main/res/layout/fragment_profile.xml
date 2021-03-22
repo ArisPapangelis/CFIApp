@@ -55,11 +55,13 @@
 
     <Button
         android:id="@+id/buttonSaveUserInfo"
-        android:layout_width="209dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
+        android:layout_marginEnd="50dp"
         android:text="Save user"
+        app:layout_constraintEnd_toStartOf="@+id/buttonDeleteUser"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewBMI" />
 
@@ -101,7 +103,7 @@
         android:id="@+id/editTextSex"
         android:layout_width="98dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="18dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintBottom_toBottomOf="@+id/textView12"
@@ -112,7 +114,7 @@
         android:id="@+id/editTextHeight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="28dp"
         android:layout_marginEnd="4dp"
         android:ems="10"
         android:inputType="numberDecimal"
@@ -205,6 +207,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewSelectedUserProfile" />
+
+    <Button
+        android:id="@+id/buttonDeleteUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="Delete user"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonSaveUserInfo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/buttonSaveUserInfo" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

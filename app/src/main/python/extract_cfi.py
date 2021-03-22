@@ -56,7 +56,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
     if portrait_mode==False:
         plt.figure(meal_ID, figsize=(26, 10.8))
     else:
-        plt.figure(meal_ID, figsize=(10.8, 9))
+        plt.figure(meal_ID, figsize=(10.8, 7))
 
     plt.xlabel('Time (seconds)', fontsize = 25)
     plt.ylabel('Weight (grams)', fontsize = 25)

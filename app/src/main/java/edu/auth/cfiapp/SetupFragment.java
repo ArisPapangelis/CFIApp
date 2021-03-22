@@ -1,10 +1,13 @@
 package edu.auth.cfiapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -24,11 +27,15 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Locale;
+
+import static android.app.Activity.RESULT_OK;
 
 public class SetupFragment extends Fragment implements View.OnClickListener {
 
     public static final int NUMBER_OF_CONTROL_MEALS = 3;
+    private static final int FILE_REQUEST_CODE = 1;
 
     SendSchedule SS;
 
@@ -77,11 +84,15 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         b1.setOnClickListener(this);
         Button b2 = (Button) v.findViewById(R.id.buttonCreateSchedule);
         b2.setOnClickListener(this);
+        Button b3 = (Button) v.findViewById(R.id.buttonDeleteMeal);
+        b3.setOnClickListener(this);
+        Button b4 = (Button) v.findViewById(R.id.buttonDeleteSchedule);
+        b4.setOnClickListener(this);
+
         RadioButton rb1 = (RadioButton) v.findViewById(R.id.radioReduceFoodIntake);
         rb1.setOnClickListener(this);
         RadioButton rb2 = (RadioButton) v.findViewById(R.id.radioIncreaseFoodIntake);
         rb2.setOnClickListener(this);
-
 
         selectedUserTextView = (TextView) v.findViewById(R.id.textViewSelectedUserSetup);
         completedControlMealsTextView = (TextView) v.findViewById(R.id.textViewCompletedControlMeals);
@@ -132,16 +143,27 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         int id = view.getId();
-        Intent intent;
 
         if (id == R.id.buttonControl && !selectedUser.equals("")) {
             if (getCompletedControlMeals() < NUMBER_OF_CONTROL_MEALS) {
-                intent = new Intent(getActivity(), ControlModeActivity.class);
+                Intent intent = new Intent(getActivity(), ControlModeActivity.class);
                 intent.putExtra(MainActivity.EXTRA_USERID, selectedUser);
                 startActivity(intent);
             }
             else {
                 Toast.makeText(getActivity(), "You have already completed all control meals", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (id == R.id.buttonDeleteMeal && !selectedUser.equals("")) {
+            if (getCompletedControlMeals() > 0) {
+                Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                File path = new File(getActivity().getExternalFilesDir(null) + File.separator + selectedUser + File.separator + "control_meals");
+                Uri uri = Uri.parse(path.toString());
+                fileIntent.setDataAndType(uri, "text/plain");
+                startActivityForResult(Intent.createChooser(fileIntent,"Select file to delete:"), FILE_REQUEST_CODE);
+            }
+            else {
+                Toast.makeText(getActivity(), "There are no control meals to delete", Toast.LENGTH_SHORT).show();
             }
         }
         else if (id == R.id.buttonCreateSchedule && !selectedUser.equals("")) {
@@ -150,6 +172,33 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
             }
             else {
                 Toast.makeText(getActivity(), "Please complete all control meals before creating a training schedule", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (id == R.id.buttonDeleteSchedule && !selectedUser.equals("")) {
+            File file = new File(getActivity().getExternalFilesDir(null), selectedUser);
+            file = new File(file, "training_schedule.csv");
+            if (file.isFile()) {
+                File finalFile = file;
+                new AlertDialog.Builder(getActivity())
+                        .setTitle("Warning")
+                        .setMessage("Do you really want to delete the training schedule for user " + selectedUser + "?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                            boolean delete = finalFile.delete();
+                            if (delete) {
+                                SS.sendSchedule(-100);
+                                Toast.makeText(getActivity(), "Training schedule deleted successfully", Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(getActivity(), "Error when trying to delete the training schedule", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, (dialogInterface, whichButton) -> {
+                            Toast.makeText(getActivity(), "Training schedule deletion cancelled", Toast.LENGTH_SHORT).show();
+                        }).show();
+            }
+            else {
+                Toast.makeText(getActivity(), "Training schedule for user " + selectedUser + " doesn't exist", Toast.LENGTH_SHORT).show();
             }
         }
         else if (id == R.id.radioReduceFoodIntake) {
@@ -161,6 +210,72 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         else {
             Toast.makeText(getActivity(), "Please select a user first in the Profile tab", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
+            Uri selectedFile = data.getData();
+            String mealToDelete = "";
+            if (selectedFile != null) {
+                String mealPath = selectedFile.getPath();
+                mealToDelete = mealPath.split(File.separator)[mealPath.split(File.separator).length-1];
+            }
+            if (deleteControlMeal(mealToDelete)) {
+                Toast.makeText(getActivity(), "Control meal " + mealToDelete + " deleted successfully", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getActivity(), "Error when trying to delete " + mealToDelete, Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private boolean deleteControlMeal(String mealToDelete) {
+        File file = new File(getActivity().getExternalFilesDir(null) +
+                File.separator + selectedUser + File.separator + "control_meals" + File.separator + mealToDelete);
+        File pngFile = new File(getActivity().getExternalFilesDir(null) +
+                File.separator + selectedUser + File.separator + "control_meals" + File.separator + mealToDelete.split("\\.")[0] + ".png");
+
+
+        boolean deleted = file.delete(); //Delete .txt file
+        if (deleted) {
+            pngFile.delete(); //Delete .png file
+            try {
+                //Read the file with the extracted control meal indicators
+                File indicatorsFile = new File(getActivity().getExternalFilesDir(null) +
+                        File.separator + selectedUser + File.separator + "control_meals" + File.separator + "control_meals_indicators.csv");
+                BufferedReader csvReader = new BufferedReader(new FileReader(indicatorsFile));
+
+                ArrayList <String> lines = new ArrayList<String>(NUMBER_OF_CONTROL_MEALS + 1);
+                int lineToDelete = 1;
+                String currentLine;
+                while ((currentLine = csvReader.readLine())!=null) {
+                    lines.add(currentLine);
+                    String[] indicators = currentLine.split(";");
+                    String mealID = mealToDelete.split("\\.")[0];
+                    if (indicators[0].equals(mealID) && lines.size()!=1) {
+                        lineToDelete = lines.size()-1;
+                    }
+                }
+                csvReader.close();
+
+                //Rewrite the file, excluding the line that matches the meal which was deleted
+                FileWriter csvWriter = new FileWriter(indicatorsFile, false);
+                for (int i=0; i<lines.size(); i++) {
+                    if (i!=lineToDelete) {
+                        csvWriter.append(String.format(Locale.US, "%s%n", lines.get(i)));
+                    }
+                }
+                csvWriter.flush();
+                csvWriter.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return deleted;
     }
 
     private void createTrainingSchedule() {
@@ -183,11 +298,6 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                     if (row != null) {
                         String[] rowIndicators = row.split(";");
                         System.arraycopy(rowIndicators, 0, indicators[i], 0, rowIndicators.length);
-                        /*
-                        for (int j=0; j<rowIndicators.length; j++) {
-                            indicators[i][j] = rowIndicators[j];
-                        }
-                        */
                     }
                 }
                 csvReader.close();

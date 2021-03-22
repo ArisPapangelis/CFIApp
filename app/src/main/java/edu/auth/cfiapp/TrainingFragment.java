@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Locale;
 
 
 public class TrainingFragment extends Fragment implements View.OnClickListener{
@@ -63,7 +64,7 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         File readPath = new File(getActivity().getExternalFilesDir(null), selectedUser);
         readPath = new File(readPath, "training_schedule.csv");
         if (!selectedUser.equals("") && readPath.isFile()){
-            completedTrainingMealsTextView.setText(String.format("Training schedule found! %d out of %d training meals completed", getNumberOfTrainingMeals(true), getNumberOfTrainingMeals(false)));
+            completedTrainingMealsTextView.setText(String.format(Locale.US,"Training schedule found! %d out of %d training meals completed", getNumberOfTrainingMeals(true), getNumberOfTrainingMeals(false)));
             completedTrainingMealsTextView.setTextColor(Color.GREEN);
         }
     }
@@ -126,12 +127,23 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         File readPath = new File(getActivity().getExternalFilesDir(null), selectedUser);
         readPath = new File(readPath, "training_schedule.csv");
         if (!selectedUser.equals("") && readPath.isFile()){
-            completedTrainingMealsTextView.setText(String.format("Training schedule found! %d out of %d training meals completed", getNumberOfTrainingMeals(true), getNumberOfTrainingMeals(false)));
+            completedTrainingMealsTextView.setText(String.format(Locale.US,"Training schedule found! %d out of %d training meals completed", getNumberOfTrainingMeals(true), getNumberOfTrainingMeals(false)));
             completedTrainingMealsTextView.setTextColor(Color.GREEN);
+        }
+        else {
+            completedTrainingMealsTextView.setText("No training schedule found, please create one in the Setup tab.");
+            completedTrainingMealsTextView.setTextColor(Color.RED);
         }
     }
 
     public void receiveSchedule(int message) {
-        completedTrainingMealsTextView.setText(String.format("Training schedule found! 0 out of %d training meals completed", message));
+        if (message == -100) {
+            completedTrainingMealsTextView.setText("No training schedule found, please create one in the Setup tab.");
+            completedTrainingMealsTextView.setTextColor(Color.RED);
+        }
+        else {
+            completedTrainingMealsTextView.setText(String.format("Training schedule found! 0 out of %d training meals completed", message));
+            completedTrainingMealsTextView.setTextColor(Color.GREEN);
+        }
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -81,6 +82,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         b1.setOnClickListener(this);
         Button b2 = (Button) v.findViewById(R.id.buttonSaveUserInfo);
         b2.setOnClickListener(this);
+        Button b3 = (Button) v.findViewById(R.id.buttonDeleteUser);
+        b3.setOnClickListener(this);
 
         userID = (EditText) v.findViewById(R.id.userID);
         ageEditText = (EditText) v.findViewById(R.id.editTextAge);
@@ -105,7 +108,45 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         } else if (id == R.id.buttonSaveUserInfo) {
             saveUserInfo();
         }
+        else {
+            deleteUser();
+        }
 
+    }
+
+    private void deleteUser() {
+        String user = userID.getText().toString();
+        File path = new File(getActivity().getExternalFilesDir(null), user);
+        if (!user.equals("") && path.isDirectory()) {
+            new AlertDialog.Builder(getActivity())
+                    .setTitle("Warning")
+                    .setMessage("Are you sure you want to delete the user " + selectedUser + "? The user's info," +
+                            " as well as all meal .txt and .png files, meal indicator files and training schedule files will be deleted.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
+                        boolean delete = deleteRecursive(path);
+                        if (delete) {
+                            Toast.makeText(getActivity(), "User " + selectedUser + " deleted successfully", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+                            Toast.makeText(getActivity(), "Error when trying to delete the user", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.no, (dialogInterface, whichButton) -> {
+                        Toast.makeText(getActivity(), "User deletion cancelled", Toast.LENGTH_SHORT).show();
+                    }).show();
+        }
+        else {
+            Toast.makeText(getActivity(), "User doesn't exist", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
+
+        return fileOrDirectory.delete();
     }
 
     private void saveUserInfo() {

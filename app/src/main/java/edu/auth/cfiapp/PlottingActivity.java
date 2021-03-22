@@ -111,7 +111,7 @@ public class PlottingActivity extends AppCompatActivity implements SkaleHelper.L
             boolean hasPermission = SkaleHelper.hasPermission(this);
             if(hasPermission){
                 mSkaleHelper.resume();
-                Log.i("PlottingActivity","finding skale...");
+                Log.i("PlottingActivity","Finding skale...");
             }else{
                 SkaleHelper.requestBluetoothPermission(this, REQUEST_BT_PERMISSION);
             }
