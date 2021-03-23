@@ -149,7 +149,7 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
         mWeightTextView.setText(String.format(Locale.US,"%1.1f g", weight));
         currentScaleWeight = weight;
         if (plateWeight!=0) {
-            double percentageFilled = (weight - plateWeight) / (goalFoodIntake + plateWeight);
+            double percentageFilled = 100 * (weight - plateWeight) / goalFoodIntake;
             percentageFilledTextView.setText(String.format(Locale.US, "%.2f %%", percentageFilled));
         }
     }
