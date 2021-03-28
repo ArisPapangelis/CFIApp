@@ -92,17 +92,17 @@ public class IndicatorsActivity extends AppCompatActivity {
                             if (results[0] > 0){
                                 eatingStyle.setText("Accelerated");
                                 eatingStyle.setTextColor(Color.RED);
-                                tip.setText("You have a higher risk of developing disordered eating. Consider training " +
+                                tip.setText("Your accelerated eating rate is faster than normal. Consider training " +
                                         "away this eating behaviour through the application's training mode.");
                             } else if (results[0] > -0.0005) {
                                 eatingStyle.setText("Linear");
                                 eatingStyle.setTextColor(Color.RED);
-                                tip.setText("You are at risk of developing disordered eating. Consider training " +
+                                tip.setText("Your linear eating rate is faster than normal. Consider training " +
                                         "away this eating behaviour through the application's training mode.");
                             } else {
                                 eatingStyle.setText("Decelerated");
                                 eatingStyle.setTextColor(Color.GREEN);
-                                tip.setText("You have a lower risk of developing disordered eating. You can use " +
+                                tip.setText("Your decelerated eating rate matches normal dietary behaviour. You can use " +
                                         "the application's training mode to see what a food intake reference curve looks like.");
                             }
 

@@ -41,15 +41,8 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
     cfi = np.array(w)
     
     
-    #Downsampling 10Hz to 5Hz
+    #The scale is being sampled at ~5Hz
     downsampled_rate = 5
-    #downsampling_factor = int(initial_sampling_rate / downsampled_rate)
-    #time = time[::downsampling_factor]
-    #cfi = cfi[::downsampling_factor]
-    #time = time[:to]
-    #cfi = cfi[:to]
-    
-    #cfi_raw = cfi.copy()
 
     #Initial plot setup
     plt.ioff()
@@ -63,9 +56,8 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
     plt.title(meal_ID, fontsize = 30)
     plt.xticks(fontsize = 22)
     plt.yticks(fontsize = 22)
-    plt.plot(time,cfi, label = "Raw data")
-    
-    
+    #plt.plot(time,cfi, label = "Raw data")
+
     
     #Find stable periods
     stability_threshold = 1
@@ -102,26 +94,22 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
     delta = np.pad(delta, (padding,padding), mode = 'edge')
     
     #plt.plot(time,delta, label = "Delta")
-    
 
     #Compare stable periods to eliminate artifacts or identify food additions
     food_mass_bite_threshold = 75
     food_addition_threshold = 60
     food_mass_bite_count = 0
     for i in range(1,len(ranges)):
-                
         #Food addition
         second_to_first_difference = cfi[ranges[i,0]+1]-cfi[ranges[i-1,0]+1]
         if second_to_first_difference > food_addition_threshold:
             deltaDiff = delta[ranges[i,0]+1] - delta[ranges[i-1,0]+1]
-            #deltaDiff>=0 and 
             if deltaDiff>=0 and delta[ranges[i,0]+1] > 0 :
                 for j in range(ranges[i-1,1]+1):
                     cfi[j] = cfi[j] + second_to_first_difference
             else:
                 cfi[ranges[i,0]+1:ranges[i,1]+1] = cfi[ranges[i-1,0]+1]
-        
-        
+
         #Large food mass bite
         elif second_to_first_difference < -food_mass_bite_threshold:
             #if i<len(ranges)-1 and cfi[ranges[i+1,0]+1]-cfi[ranges[i,0]+1]>10:
@@ -131,7 +119,6 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
     
         #Artifacts
         elif second_to_first_difference>0:
-            
             #Final food mass bites of the meal
             if i>1 and cfi[ranges[i,0]+1] - cfi[ranges[i-2,0]+1] < 0 and food_mass_bite_count > 5:
                  cfi[ranges[i-1,0]+1:ranges[i-1,1]+1] = cfi[ranges[i-2,0]+1]
@@ -152,15 +139,13 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
     for i in range(1,len(cfi)):
         if i not in stableSamples:
             cfi[i]=cfi[i-1]
-            
-    
+
     
     #"""
     #Start and end of meal
     cfi = cfi[ranges[0,0]:ranges[len(ranges)-1,1]]
     time = time[ranges[0,0]:ranges[len(ranges)-1,1]]
     if end_of_meal == True:
-        #print(meal_ID)
         indices = np.where(np.diff(cfi)!=0)[0]
         if len(indices) != 0:
             startIndex = indices[0]
@@ -171,7 +156,6 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
             time = time[start:end]
     
     #"""
-    #index_offset = time[0] * downsampled_rate
     time = time - time[0]
 
     #Plot reference curve if training mode was selected
@@ -182,7 +166,7 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
         reference_time = np.arange(0, time_to_finish, 1/5)
         reference_weight = np.linspace(0, end_weight, num = len(reference_time))
         reference_coeff = curve_fit(fit_func, reference_time, reference_weight,
-                                    bounds = ([-1, 1.5], [goal_a, 2]))[0]
+                                    bounds = ([-1, 0.9], [goal_a, 1.2]))[0]
         reference_curve = reference_coeff[0] * reference_time ** 2 + reference_coeff[1] * reference_time
         plt.plot(reference_time, reference_curve, label= "Reference curve")
 
@@ -233,7 +217,6 @@ def extract_cfi(t, w, end_of_meal, stable_secs, meal_ID, plate_weight, goal_a, p
     #Plot extracted cfi curve
     plt.plot(time,curve, label = "Quadratic curve", linewidth = 5, linestyle = '-')
     plt.plot(time,cfi, label = "Extracted CFI", linewidth = 4, alpha=0.6)
-    #plt.scatter((bite_indices + int(index_offset)) / downsampled_rate, cfi_raw[bite_indices + int(index_offset)], label = 'Detected bites', c = 'tab:orange')
     plt.legend(loc=2, fontsize=20)
 
     f = io.BytesIO()
