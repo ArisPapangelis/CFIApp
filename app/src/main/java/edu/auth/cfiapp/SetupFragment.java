@@ -43,7 +43,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
 
     private TextView selectedUserTextView, completedControlMealsTextView;
     private EditText numberOfTrainingMeals, stepSizeInGrams;
-    private int trainingGoal;
+    private int trainingGoal;   //0 for Reduce food intake, 1 for Increase food intake
 
     public SetupFragment() {
         // Required empty public constructor
@@ -53,6 +53,10 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         return new SetupFragment();
     }
 
+    /*
+    Interface used for notifying TrainingFragment that a new training schedule has been created,
+    or that a previously created schedule has been deleted.
+     */
     interface SendSchedule {
         void sendSchedule(int message);
     }
@@ -110,6 +114,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    //Function to get the number of currently completed control meals. Used to update the completed control meals textView.
     private int getCompletedControlMeals() {
         try {
             File path = new File(getActivity().getExternalFilesDir(null), selectedUser + File.separator + "control_meals");
@@ -131,6 +136,10 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         return -1;
     }
 
+    /*
+    Function to receive the selected user's username from ProfileFragment, and update the selected user textView.
+    The completed control meals textView for the selected user is also updated.
+     */
     protected void receiveUser(String message) {
         selectedUser = message;
         selectedUserTextView.setText("The currently selected user is: " + selectedUser);
@@ -139,11 +148,12 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    // Called when the user taps the START CONTROL MEAL button
+    // Called when the user taps any of the buttons.
     @Override
     public void onClick(View view) {
         int id = view.getId();
 
+        //When START CONTROL MEAL is pressed.
         if (id == R.id.buttonControl && !selectedUser.equals("")) {
             if (getCompletedControlMeals() < NUMBER_OF_CONTROL_MEALS) {
                 Intent intent = new Intent(getActivity(), ControlModeActivity.class);
@@ -154,6 +164,8 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "You have already completed all control meals", Toast.LENGTH_SHORT).show();
             }
         }
+
+        //When DELETE CONTROL MEAL is pressed.
         else if (id == R.id.buttonDeleteMeal && !selectedUser.equals("")) {
             if (getCompletedControlMeals() > 0) {
                 Intent fileIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -166,6 +178,8 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "There are no control meals to delete", Toast.LENGTH_SHORT).show();
             }
         }
+
+        //When CREATE TRAINING SCHEDULE is pressed.
         else if (id == R.id.buttonCreateSchedule && !selectedUser.equals("")) {
             if (getCompletedControlMeals() >= NUMBER_OF_CONTROL_MEALS) {
                 createTrainingSchedule();
@@ -174,6 +188,8 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "Please complete all control meals before creating a training schedule", Toast.LENGTH_SHORT).show();
             }
         }
+
+        //WHEN DELETE TRAINING SCHEDULE is pressed.
         else if (id == R.id.buttonDeleteSchedule && !selectedUser.equals("")) {
             File file = new File(getActivity().getExternalFilesDir(null), selectedUser);
             file = new File(file, "training_schedule.csv");
@@ -186,6 +202,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                         .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> {
                             boolean delete = finalFile.delete();
                             if (delete) {
+                                //Notifying TrainingFragment that the current schedule has been deleted.
                                 SS.sendSchedule(-100);
                                 Toast.makeText(getActivity(), "Training schedule deleted successfully", Toast.LENGTH_SHORT).show();
                             }
@@ -201,18 +218,26 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(getActivity(), "Training schedule for user " + selectedUser + " doesn't exist", Toast.LENGTH_SHORT).show();
             }
         }
+
+        //When selecting radio button "Reduce food intake".
         else if (id == R.id.radioReduceFoodIntake) {
             trainingGoal = 0;
         }
+
+        //When selecting radio button "Increase food intake".
         else if (id == R.id.radioIncreaseFoodIntake) {
             trainingGoal = 1;
         }
+
         else {
             Toast.makeText(getActivity(), "Please select a user first in the Profile tab", Toast.LENGTH_SHORT).show();
         }
     }
 
-
+    /*
+    This function is called when the user tries to delete a control meal. A file explorer window is opened,
+    for the user to select the meal they want to delete. A message is shown for successful or unsuccessful deletion of the meal.
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == FILE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
@@ -231,6 +256,11 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    /*
+    Function that deletes the selected control meal from the relevant filepath. Both the .txt file with scale measurements, as
+    well as the .png file with the meal curve of the meal are deleted. The row with the extracted meal indicators of the meal
+    is also deleted from the relevant .csv file.
+     */
     private boolean deleteControlMeal(String mealToDelete) {
         File file = new File(getActivity().getExternalFilesDir(null) +
                 File.separator + selectedUser + File.separator + "control_meals" + File.separator + mealToDelete);
@@ -247,8 +277,9 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                         File.separator + selectedUser + File.separator + "control_meals" + File.separator + "control_meals_indicators.csv");
                 BufferedReader csvReader = new BufferedReader(new FileReader(indicatorsFile));
 
+                //All lines are read, and the line corresponding to the file being deleted is found.
                 ArrayList <String> lines = new ArrayList<String>(NUMBER_OF_CONTROL_MEALS + 1);
-                int lineToDelete = 1;
+                int lineToDelete = 1;   //Starts from 1 since the first line is a header.
                 String currentLine;
                 while ((currentLine = csvReader.readLine())!=null) {
                     lines.add(currentLine);
@@ -278,6 +309,12 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
         return deleted;
     }
 
+    /*
+    This function is called when the user pressed the button to create a new training schedule.
+    The training schedule is created based on the completed control meals of the user, as well as the
+    selected parameters in the UI. The parameters are: step size in grams, number of training meals and
+    training mode (increase or decrease food intake).
+     */
     private void createTrainingSchedule() {
         File readPath = new File(getActivity().getExternalFilesDir(null), selectedUser + File.separator + "control_meals");
         readPath = new File(readPath, "control_meals_indicators.csv");
@@ -289,7 +326,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
             BufferedReader csvReader;
             FileWriter csvWriter;
             try {
-                //Read the meal indicators of the already completed control meals
+                //Read the meal indicators of the already completed control meals.
                 csvReader = new BufferedReader(new FileReader(readPath));
                 csvReader.readLine(); //Consume first line
                 String[][] indicators = new String[NUMBER_OF_CONTROL_MEALS][8];
@@ -302,13 +339,15 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                 }
                 csvReader.close();
 
-                //Calculate min, max and average of the relevant indicators from the control meals, in order to create the training schedule
+                //Calculate min, max and average of the relevant indicators from the control meals, in order to create the training schedule.
                 double averageOfA=0;
                 double minOfA=100000;
                 double maxOfA=-10;
+
                 float averageOfFoodIntake=0;
                 float minOfFoodIntake=100000;
                 float maxOfFoodIntake=-10;
+
                 double a;
                 float totalFoodIntake;
                 for (int i=0; i<NUMBER_OF_CONTROL_MEALS; i++) {
@@ -326,22 +365,46 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
 
 
 
-                //Write the training schedule to file, based on the given parameters and the read control meal indicators
+                /*
+                Write the training schedule to file, based on the given parameters and the read control meal indicators.
+                The created .csv file with the training schedule, has as many columns as the parameter "number of training meals".
+                The first row contains the names of the meals, starting from 0.
+                The second row, contains the goal a_coefficient (food intake deceleration) of the meal curve for the relevant training meal.
+                The third row, contains the goal food intake for the relevant training meal.
+                The fourth row, contains the number of completed training meals, which is 0 when the schedule is first created.
+                 */
                 String numberOfMeals = numberOfTrainingMeals.getText().toString();
                 String stepSize = stepSizeInGrams.getText().toString();
                 if (!numberOfMeals.equals("") && !numberOfMeals.equals("0") && !stepSize.equals("") && !stepSize.equals("0") && trainingGoal!=-1) {
                     csvWriter = new FileWriter(writePath);
                     int mealNum = Integer.parseInt(numberOfMeals);
                     float stepSizeNum = Float.parseFloat(stepSize);
+
                     for (int i=0; i<mealNum; i++) {
                         csvWriter.append(String.format(Locale.US,"Meal_%d;", i));
                     }
                     csvWriter.append(String.format(Locale.US,"%n"));
+
+                    /*
+                    The goal a_coefficient is calculated from the average coefficient of the three control meals.
+                    The aim is to normalise a possibly abnormal a_coefficient through training,
+                    from positive or close to zero, to a healthy coefficient of 0.0005. The a_coefficient is decreased by 0.0001
+                    in each training meal, until it is normalised.
+                     */
                     for (int i=0; i<mealNum; i++) {
-                        a = maxOfA - (i+1) * 0.0001;
+                        a = averageOfA - (i+1) * 0.0001;
+                        if (a<-0.0005) a = 0.0005;
                         csvWriter.append(String.format(Locale.US,"%.6f;", a));
                     }
                     csvWriter.append(String.format(Locale.US,"%n"));
+
+                    /*
+                    The goal food intake is calculated from the average food intake of the three control meals.
+                    The aim is to increase or decrease food intake, depending on the selected training mode,
+                    by the parameter "step size in grams" each time. For example, for 5 training meals, with the mode
+                    "Increase food intake", a step size number of 10 grams, and an average control meal intake of 300 grams,
+                    the row of the .csv file would be 310;320;330;340;350;
+                     */
                     for (int i=0; i<mealNum; i++) {
                         if (trainingGoal == 0) {
                             //Reduce food intake
@@ -354,11 +417,14 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                         csvWriter.append(String.format(Locale.US,"%.2f;", totalFoodIntake));
                     }
                     csvWriter.append(String.format(Locale.US,"%n"));
+
+                    //Number of completed training meals is 0 at first.
                     csvWriter.append(String.format(Locale.US,"%d",0));
                     csvWriter.flush();
                     csvWriter.close();
                     Toast.makeText(getActivity(), "Training schedule created successfully", Toast.LENGTH_SHORT).show();
 
+                    //Notifying TrainingFragment that a new training schedule has been created.
                     SS.sendSchedule(mealNum);
                 }
                 else {

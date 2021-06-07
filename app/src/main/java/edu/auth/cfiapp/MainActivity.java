@@ -52,6 +52,10 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.S
         });
     }
 
+    /*
+    Function of interface SendUser, to send a message with the selected user's username from ProfileFragment
+    to SetupFragment and TrainingFragment.
+    */
     @Override
     public void sendUser(String message) {
         String tag = "android:switcher:" + R.id.viewPager + ":" + 1;
@@ -67,7 +71,10 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.S
         }
     }
 
-
+    /*
+    Function of interface SendSchedule, to send a message that notifies TrainingFragment that a new schedule has been created in SetupFragment,
+    or that the currently created training schedule has been deleted.
+     */
     @Override
     public void sendSchedule(int message) {
         String tag = "android:switcher:" + R.id.viewPager + ":" + 2;
@@ -75,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements ProfileFragment.S
         if (training != null) {
             training.receiveSchedule(message);
         }
-
     }
 }
 

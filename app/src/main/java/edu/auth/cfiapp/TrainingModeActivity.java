@@ -77,7 +77,10 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
         //mSkaleHelper.disconnect();
     }
 
-    // Called when the user taps the TRAIN button
+    /*
+    Called when the user taps the START MEAL button. The relevant activity is launched only if a meal ID has been entered
+    and the weight of the plate has been sampled.
+     */
     public void confirmTrainingMeal(View view) {
         Intent intent = new Intent(this, PlottingActivity.class);
         EditText editText = (EditText) findViewById(R.id.trainingMealID);
@@ -100,7 +103,7 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
         }
     }
 
-    //Called when the user taps the SAMPLE button
+    //Called when the user taps the SAMPLE PLATE WEIGHT button. The function saves the weight of the plate, to be passed to PlottingActivity.
     public void samplePlateWeight(View view) {
         if (currentScaleWeight < 5) {
             Toast.makeText(this, "No plate detected, please place it on the scale", Toast.LENGTH_SHORT).show();
@@ -112,6 +115,10 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
         }
     }
 
+    /*
+    Function to extract the goal food intake for the current training meal, based on the training schedule.
+    This is needed to show the user how much food he should put on the plate.
+     */
     private double getGoalFoodIntake() {
         File readPath = new File(getApplicationContext().getExternalFilesDir(null), selectedUser);
         readPath = new File(readPath, "training_schedule.csv");
@@ -136,6 +143,7 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
         return -1;
     }
 
+    //Called when one of the buttons on the scale is pressed.
     @Override
     public void onButtonClicked(int id) {
         Toast.makeText(this, "button " + id + " is clicked", Toast.LENGTH_SHORT).show();
@@ -144,6 +152,12 @@ public class TrainingModeActivity extends AppCompatActivity implements SkaleHelp
         }
     }
 
+    /*
+    Called when the bluetooth scale has a weight update. If the weight of the plate has been sampled,
+    the textView that shows how much the user should fill his plate is updated in real time. The user
+    should keep filling his plate until he reaches the goal food intake for the current meal, and 100%
+    is shown on the textView.
+     */
     @Override
     public void onWeightUpdate(float weight) {
         mWeightTextView.setText(String.format(Locale.US,"%1.1f g", weight));

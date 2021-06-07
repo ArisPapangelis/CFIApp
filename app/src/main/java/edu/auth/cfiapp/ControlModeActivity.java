@@ -21,7 +21,7 @@ public class ControlModeActivity extends AppCompatActivity {
         selectedUser = intent.getStringExtra(MainActivity.EXTRA_USERID);
     }
 
-    //Called when the user presses the START MEAL button
+    //Called when the user presses the START MEAL button. The relevant activity is launched only if a meal ID has been entered.
     public void confirmControlMeal(View view) {
         Intent intent = new Intent(this, PlottingActivity.class);
         EditText editText = (EditText) findViewById(R.id.controlMealID);

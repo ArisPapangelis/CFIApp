@@ -50,6 +50,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return new ProfileFragment();
     }
 
+    //Interface used for sending the username of the currently selected user to SetupFragment and Training fragment.
     interface SendUser {
         void sendUser(String message);
     }
@@ -98,7 +99,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return v;
     }
 
-
+    //Called when the user taps any of the buttons
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -114,6 +115,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    //Function to delete the all the info of an existing user, after asking for confirmation.
     private void deleteUser() {
         String user = userID.getText().toString();
         File path = new File(getActivity().getExternalFilesDir(null), user);
@@ -141,6 +143,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    //Function that implements recursive deletion of subdirectories.
     private boolean deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles())
@@ -149,6 +152,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return fileOrDirectory.delete();
     }
 
+    /*
+    Function to save the info of a new user, or update the info of an already existing user. All info is written to .csv files.
+    The user must fill every editText in order to successfully save his info.
+     */
     private void saveUserInfo() {
         String user = userID.getText().toString();
         File path = new File(getActivity().getExternalFilesDir(null), user);
@@ -185,12 +192,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+    //Function to calculate the body mass index of a user from his height and weight.
     private float calculateBMI(String height, String weight) {
         float h = Float.parseFloat(height);
         float w = Float.parseFloat(weight);
         return w / (h * h);
     }
 
+    /*
+    Function to select an already existing user for the current app session and retrieve his info from the .csv files.
+    Used as a "login" function. The other fragments are notified of the selected user's username through the SendUser interface.
+     */
     private void selectUser() {
         String user = userID.getText().toString();
         File path = new File(getActivity().getExternalFilesDir(null), user);
@@ -201,7 +213,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             SU.sendUser(selectedUser);
             selectedUserTextView.setText("The currently selected user is: " + selectedUser);
             selectedUserTextView.setTextColor(Color.BLUE);
-
             try {
                 BufferedReader csvReader = new BufferedReader(new FileReader(path));
                 csvReader.readLine(); //Consume first line

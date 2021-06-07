@@ -69,6 +69,10 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    /*
+    Function to get either the total number of training meals based on the training schedule (completed==0),
+    or the number of already completed training meals (completed==1).
+     */
     private int getNumberOfTrainingMeals(boolean completed) {
         File readPath = new File(getActivity().getExternalFilesDir(null), selectedUser);
         readPath = new File(readPath, "training_schedule.csv");
@@ -93,6 +97,11 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         return -1;
     }
 
+    /*
+    Called when the user taps the "START TRAINING SCHEDULE" button. The relevant activity is launched only if
+    a user has been selected, a training schedule exists for the user, and the user has not already completed
+    all the training meals in the current schedule.
+     */
     @Override
     public void onClick(View view) {
         int id = view.getId();
@@ -119,6 +128,10 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    /*
+    Function to receive the selected user's username from ProfileFragment, and update the selected user textView.
+    The completed training meals textView for the selected user is also updated.
+    */
     protected void receiveUser(String message) {
         selectedUser = message;
         selectedUserTextView.setText("The currently selected user is: " + selectedUser);
@@ -136,6 +149,10 @@ public class TrainingFragment extends Fragment implements View.OnClickListener{
         }
     }
 
+    /*
+    Function for TrainingFragment to be notified that a training schedule has either been created or deleted for the selected user
+    in SetupFragment. The completed training meals textView is updated accordingly.
+    */
     public void receiveSchedule(int message) {
         if (message == -100) {
             completedTrainingMealsTextView.setText("No training schedule found, please create one in the Setup tab.");
