@@ -388,7 +388,7 @@ public class SetupFragment extends Fragment implements View.OnClickListener {
                     /*
                     The goal a_coefficient is calculated from the average coefficient of the three control meals.
                     The aim is to normalise a possibly abnormal a_coefficient through training,
-                    from positive or close to zero, to a healthy coefficient of 0.0005. The a_coefficient is decreased by 0.0001
+                    from positive or close to zero, to a healthy coefficient of -0.0005. The a_coefficient is decreased by 0.0001
                     in each training meal, until it is normalised.
                      */
                     for (int i=0; i<mealNum; i++) {

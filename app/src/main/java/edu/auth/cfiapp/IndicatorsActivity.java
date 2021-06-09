@@ -33,6 +33,7 @@ public class IndicatorsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_indicators);
 
+        //Receiving the extra messages from PlottingActivity.
         Intent intent = getIntent();
         String mealID = intent.getStringExtra(PlottingActivity.EXTRA_MEALID);
         String userID = intent.getStringExtra(PlottingActivity.EXTRA_USERID);
@@ -52,7 +53,12 @@ public class IndicatorsActivity extends AppCompatActivity {
         extractMealIndicators(mealID, userID, time, weight, plateWeight, aCoefficient);
     }
 
-
+    /*
+    This function is called to extract the meal indicators of the finished meal, as well as a picture of the CFI curve of
+    the finished meal, by calling a python function twice through the use of the Chaquopy library. The UI is also updated
+    based on the extracted values. The python function is called from a different thread than the main UI thread,
+    so as not to bog down the application while waiting for the result.
+     */
     private void extractMealIndicators(String mealID, String userID, double[] time, double[] weight, double plateWeight, double aCoefficient) {
 
         ImageView mealCurve = (ImageView) findViewById(R.id.mealCurveImageView);
@@ -67,12 +73,12 @@ public class IndicatorsActivity extends AppCompatActivity {
         TextView eatingStyle = (TextView) findViewById(R.id.eatingStyle);
         TextView tip = (TextView) findViewById(R.id.tipText);
 
-
         Python py = Python.getInstance();
         PyObject module = py.getModule("extract_cfi");
         new Thread(new Runnable() {
             public void run() {
                 try {
+                    //Calling the python function extract_cfi with these arguments returns the bitmap of the completed meal CFI curve.
                     byte[] bytes = module.callAttr("extract_cfi", time, weight, true, 1, mealID, plateWeight, aCoefficient, true).toJava(byte[].class);
                     Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
                     runOnUiThread(new Runnable() {
@@ -81,12 +87,12 @@ public class IndicatorsActivity extends AppCompatActivity {
                             mealCurve.setImageBitmap(bitmap);
                         }
                     });
-
+                    //Calling the python function extract_cfi with these arguments returns the extracted meal indicators of the completed meal.
                     double[] results = module.callAttr("extract_cfi", time, weight, true, 1, mealID, 0, aCoefficient, false).toJava(double[].class);
-
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            //The UI is updated with the value of the extracted meal indicators for the completed meal.
                             a.setText("Food intake deceleration (a) = " + String.format("%.5f", results[0]) + " g/s^2");
                             a.setTextColor(Color.BLUE);
                             if (results[0] > 0){
@@ -121,7 +127,7 @@ public class IndicatorsActivity extends AppCompatActivity {
                         }
                     });
 
-                    //Commit the extracted meal indicators to file
+                    //Commit the extracted meal indicators to file.
                     writeMealIndicatorsToFile(userID,mealID, plateWeight, results);
 
                 } catch (PyException e) {
@@ -131,6 +137,11 @@ public class IndicatorsActivity extends AppCompatActivity {
         }).start();
     }
 
+    /*
+    This function is called to commit the extracted meal indicators to a .csv file, whether it is a control meal or a
+    training meal. The meal indicators are needed for creating the training schedule in the case of the control meals,
+    and for research purposes in the case of the training meals. The meal ID of the completed meal is also saved.
+     */
     private void writeMealIndicatorsToFile(String userID, String mealID, double plateWeight, double[] results) {
         File writePath = new File(getApplicationContext().getExternalFilesDir(null), userID);
         if (plateWeight==0) {
@@ -144,7 +155,7 @@ public class IndicatorsActivity extends AppCompatActivity {
         }
 
         try {
-            //Write .csv file with the meal indicators extracted from the meal
+            //Write .csv file with the meal indicators extracted from the meal, as well as the meal ID.
             FileWriter csvWriter;
             File file = new File(writePath, "control_meals_indicators.csv");
             if (plateWeight!=0) file = new File(writePath, "training_meals_indicators.csv");
@@ -174,11 +185,16 @@ public class IndicatorsActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    This function is called when the completed meal is a training meal. The aim of the function is to increment the last line
+    of the training schedule by 1, which shows how many of the training meals have already been completed. This is needed in
+    order to select the training meal parameters corresponding to the correct meal for the next session.
+     */
     private void incrementTrainingSchedule(String userID) {
         File file = new File(getApplicationContext().getExternalFilesDir(null), userID);
         file = new File(file, "training_schedule.csv");
         try {
-            //Read the parameters of the created training schedule
+            //Read the parameters of the created training schedule.
             BufferedReader csvReader = new BufferedReader(new FileReader(file));
             String[] lines = new String[4];
             for (int i=0; i<lines.length; i++) {
@@ -186,12 +202,13 @@ public class IndicatorsActivity extends AppCompatActivity {
             }
             csvReader.close();
 
+            //Increment the last line of the file by 1.
             int incrementedNumberOfMeals = -1;
             if (lines[lines.length-1] != null){
                 incrementedNumberOfMeals = Integer.parseInt(lines[lines.length-1]) + 1;
             }
 
-            //Rewrite the last line of training_schedule.csv now that the training meal has been completed
+            //Rewrite the last line of training_schedule.csv now that the training meal has been completed.
             FileWriter csvWriter = new FileWriter(file);
             for (int i=0; i<lines.length-1; i++) {
                 csvWriter.append(String.format(Locale.US, "%s%n", lines[i]));
@@ -203,7 +220,5 @@ public class IndicatorsActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
-
 }
