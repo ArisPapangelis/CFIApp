@@ -15,32 +15,32 @@
 
 ## Screenshots
 
-#### Main Activity - Profile Tab &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Main Activity - Setup Tab &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Main Activity - Training Tab
-<img src="/CFIApp_screenshots/MainActivity_ProfileTab.jpg" alt="Profile tab" title="Profile tab" width="280"/> &emsp;&emsp;&emsp;&emsp;
-<img src="/CFIApp_screenshots/MainActivity_SetupTab.jpg" alt="Setup tab" title="Setup tab" width="280"/> &emsp;&emsp;&emsp;&emsp;
-<img src="/CFIApp_screenshots/MainActivity_TrainingTab.jpg" alt="Training tab" title="Training tab" width="280"/>
+#### Main Activity - Profile Tab &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Main Activity - Setup Tab 
+<img src="/CFIApp_screenshots/MainActivity_ProfileTab.jpg" alt="Profile tab" title="Profile tab" width="300"/> &emsp;&emsp;&emsp;
+<img src="/CFIApp_screenshots/MainActivity_SetupTab.jpg" alt="Setup tab" title="Setup tab" width="300"/>
+
+#### Main Activity - Training Tab
+<img src="/CFIApp_screenshots/MainActivity_TrainingTab.jpg" alt="Training tab" title="Training tab" width="300"/>
 
 <br></br>
-<br></br>
 
-#### Control Mode Activity &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Training Mode Activity
-<img src="/CFIApp_screenshots/ControlModeActivity.jpg" alt="Control Mode Activity" title="Control Mode Activity" width="300"/> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+#### Control Mode Activity &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Training Mode Activity
+<img src="/CFIApp_screenshots/ControlModeActivity.jpg" alt="Control Mode Activity" title="Control Mode Activity" width="300"/> &emsp;&emsp;&emsp;
 <img src="/CFIApp_screenshots/TrainingModeActivity.jpg" alt="Training Mode Activity" title="Training Mode Activity" width="300"/> 
 
 <br></br>
-<br></br>
 
-#### Plotting Activity - Start &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  Plotting Activity - Finish
-<img src="/CFIApp_screenshots/PlottingActivity_start.jpg" alt="Plotting Activity - Start" title="Plotting Activity - Start" width="490"/> &emsp;
-<img src="/CFIApp_screenshots/PlottingActivity_finish.jpg" alt="Plotting Activity - Finish" title="Plotting Activity - Finish" width="490"/> 
+#### Plotting Activity - Start
+<img src="/CFIApp_screenshots/PlottingActivity_start.jpg" alt="Plotting Activity - Start" title="Plotting Activity - Start" width="650"/>
 
-<br></br>
+#### Plotting Activity - Finish
+<img src="/CFIApp_screenshots/PlottingActivity_finish.jpg" alt="Plotting Activity - Finish" title="Plotting Activity - Finish" width="650"/> 
+
 <br></br>
 
 #### Indicators Activity
 <img src="/CFIApp_screenshots/IndicatorsActivity.jpg" alt="Indicators Activity" title="Indicators Activity" width="300"/> &emsp;
 
-<br></br>
 <br></br>
 
 ## Videos
