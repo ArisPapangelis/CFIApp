@@ -1,3 +1,5 @@
+<img src="/CFIApp_screenshots/CFIAppIcon.png" alt="CFIApp Icon" title="CFIApp" height="250"/>
+
 # CFIApp
  Android application to extract CFI curves in real time. My diploma thesis at Electrical and Computer Engineering, AUTh.
  
@@ -11,4 +13,41 @@
  - Calculation of important food intake indicators after the end of the meal, like food intake deceleration, total food intake, average bite size, etc.
  - Characterisation of meal eating behaviour as accelerated (very high risk), linear (high risk) or decelerated (low risk), and personalised advice based on the recorded meal.
 
-### Work in progress
+## Screenshots
+
+#### Main Activity - Profile Tab &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Main Activity - Setup Tab &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Main Activity - Training Tab
+<img src="/CFIApp_screenshots/MainActivity_ProfileTab.jpg" alt="Profile tab" title="Profile tab" width="280"/> &emsp;&emsp;&emsp;&emsp;
+<img src="/CFIApp_screenshots/MainActivity_SetupTab.jpg" alt="Setup tab" title="Setup tab" width="280"/> &emsp;&emsp;&emsp;&emsp;
+<img src="/CFIApp_screenshots/MainActivity_TrainingTab.jpg" alt="Training tab" title="Training tab" width="280"/>
+
+<br></br>
+<br></br>
+
+#### Control Mode Activity &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; Training Mode Activity
+<img src="/CFIApp_screenshots/ControlModeActivity.jpg" alt="Control Mode Activity" title="Control Mode Activity" width="300"/> &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+<img src="/CFIApp_screenshots/TrainingModeActivity.jpg" alt="Training Mode Activity" title="Training Mode Activity" width="300"/> 
+
+<br></br>
+<br></br>
+
+#### Plotting Activity - Start &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;  Plotting Activity - Finish
+<img src="/CFIApp_screenshots/PlottingActivity_start.jpg" alt="Plotting Activity - Start" title="Plotting Activity - Start" width="490"/> &emsp;
+<img src="/CFIApp_screenshots/PlottingActivity_finish.jpg" alt="Plotting Activity - Finish" title="Plotting Activity - Finish" width="490"/> 
+
+<br></br>
+<br></br>
+
+#### Indicators Activity
+<img src="/CFIApp_screenshots/IndicatorsActivity.jpg" alt="Indicators Activity" title="Indicators Activity" width="300"/> &emsp;
+
+<br></br>
+<br></br>
+
+## Videos
+#### Live demonstration of CFIApp
+[![CFIApp](https://img.youtube.com/vi/scGcK5S7wrI/0.jpg)](https://www.youtube.com/watch?v=scGcK5S7wrI)
+
+<br></br>
+
+#### Presentation of my diploma thesis (in Greek)
+[![CFIApp](https://img.youtube.com/vi/VCsytWwQ2Sg/0.jpg)](https://www.youtube.com/watch?v=VCsytWwQ2Sg)
