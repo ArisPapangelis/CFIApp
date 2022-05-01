@@ -1,7 +1,7 @@
 <img src="/CFIApp_screenshots/CFIAppIcon.png" alt="CFIApp Icon" title="CFIApp" height="250"/>
 
 # CFIApp
- Android application to extract CFI curves in real time. My diploma thesis at Electrical and Computer Engineering, AUTh.
+Android application to help users achieve a healthy eating behaviour, through training them in real time to follow a reference cumulative food intake curve. My diploma thesis at Electrical and Computer Engineering, AUTh.
  
  ## Supported features
  - Connection with the Skale smart bluetooth weight scale for real time meal weight sampling, through the Skale SDK.
